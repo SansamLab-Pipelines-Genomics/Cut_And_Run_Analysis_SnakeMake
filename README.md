@@ -213,16 +213,24 @@ conda env create -f workflow/envs/CutAndRun_Conda_Environment.yml -p /s/sansam-l
 conda activate /s/sansam-lab/CutAndRun_Conda_Environment
 ```
 
-### 4.  Modify the job-specific coniguration files.
+### 4.  Modify the job-specific configuration files.
 #### 4A.  Modify the config/config.yml file
 
 You must enter paths to the following:
-* bwa_genome:
+* bowtie2_genome:
   * location of bwa indexed genome for the alignment
-* chrom_sizes
-  * chromosome sizes file
-* juicer_RE_file
-  * restriction enzyme file generated with juicer
+* blacklist file
+  * path to blacklist file to be used for peak calling with macs2 and for making coverage files
+* trimmomatic_adapterfile:
+  * location of adapter file for trimmomatic (included with trimmomatic for truseq adapters)
+* cutadapt_adapterfile:
+  * location of adapter file for cutadapt (you may use the same file for trimmomatic)
+* sicer:
+  * sicer_genome:
+  * sicer window size:
+  * sicer fragment size:
+  * sicer fdr:
+  * sicer_gapSize:
 
 #### 4B.  Modify the config/samples.csv file
 
