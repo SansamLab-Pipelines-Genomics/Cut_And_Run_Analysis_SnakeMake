@@ -1,0 +1,3 @@
+sample,fastq1,fastq2,sampleType,Control
+testSample,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.fastq.gz,treatment,testInput
+testInput,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA
