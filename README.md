@@ -9,7 +9,7 @@ This README details the individual steps of the pipeline. To run the automated p
 ## Table of Contents
 
 * [Requirements](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#requirements)
-* [Run the pipeline step-by-step](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#run-the-pipeline-step-by-step)
+* [Description of individual steps in pipeline](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#run-the-pipeline-step-by-step)
   * [Trim reads with trimmomatic](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#1--trim-reads-with-trimmomatic)
   * [Trim the reads further with cutadapt](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#2--trim-the-reads-further-with-cutadapt)
   * [Align reads with bowtie2](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#1--trim-reads-with-trimmomatic)
@@ -21,7 +21,19 @@ This README details the individual steps of the pipeline. To run the automated p
     * [macs2 broad](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#macs2-broad)
     * [sicer](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#sicer)
 
-* [Setup](#setup)
+* [Step-by-step instructions on running Snakemake pipeline:](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#step-by-step-instructions-on-running-snakemake-pipeline)
+  * [1.  Load slurm and miniconda](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#1--load-slurm-and-miniconda)
+  * [2.  Clone repository](https://github.com/SansamLab/Process_HiC_SnakeMake#2--clone-repository)
+  * [3.  Start the conda environment](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#3--start-the-conda-environment)
+    * [3A.  FIRST TIME ONLY:  Setup conda environment](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#3a--first-time-only--setup-conda-environment)
+    * [3B.  Activate conda environment](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#3b--activate-conda-environment)
+  * [4.  Modify the job-specific configuration files.](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4--modify-the-job-specific-coniguration-files)
+    * [4A.  Modify the config/config.yml file](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4a--modify-the-configconfigyml-file)
+    * [4B.  Modify the config/samples.csv file](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4b--modify-the-configsamplescsv-file)
+    * [4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4c--if-slurm-resource-changes-are-needed-modify-the-configcluster_configyml-file)
+  * [5.  Do a dry run](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4--do-a-dry-run)
+  * [6.  Make a DAG diagram](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#5--make-a-dag-diagram)
+  * [7.  Run on cluster with slurm](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#6--run-on-cluster-with-slurm)
 
 ## Requirements
 
@@ -170,6 +182,89 @@ bamCoverage \
 ```bash
 ```
 
+## Step-by-step instructions on running Snakemake pipeline:
+
+### 1.  Load slurm and miniconda
+Note. The commands to do this will be different on your machine. These commands are specific to an HPC using slurm with these modules installed.
+
+```bash
+ml slurm
+ml miniconda
+```
+### 2.  Clone repository
+```bash
+git clone https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake.git
+# rename folder with project name
+mv Cut_And_Run_Analysis_SnakeMake/ My_CutAndRun_Project_Folder/
+# change directory into root of your project folder
+cd My_CutAndRun_Project_Folder
+```
+### 3.  Start the conda environment
+### 3A.  FIRST TIME ONLY:  Setup conda environment
+```bash
+# -f is the location of the environment .yml file. 
+## The relative path assumes that you are in the root directory of this repository.
+# -p is the path where you want to install this environment
+conda env create -f workflow/envs/CutAndRun_Conda_Environment.yml -p /s/sansam-lab/CutAndRun_Conda_Environment 
+```
+
+### 3B.  Activate conda environment
+```bash
+conda activate /s/sansam-lab/CutAndRun_Conda_Environment
+```
+
+### 4.  Modify the job-specific coniguration files.
+#### 4A.  Modify the config/config.yml file
+
+You must enter paths to the following:
+* bwa_genome:
+  * location of bwa indexed genome for the alignment
+* chrom_sizes
+  * chromosome sizes file
+* juicer_RE_file
+  * restriction enzyme file generated with juicer
+
+#### 4B.  Modify the config/samples.csv file
+
+The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files.
+
+#### 4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file
+
+CPU and memory requests for each rule in the pipeline are detailed in this file. If you are using SLURM, you may need to alter this file to fit your needs/system.
+
+### 5.  Do a dry run.
+A dry run produces a text output showing exactly what commands will be executed. Look this over carefully before submitting the full job. It is normal to see warnings about changes made to the code, input, and params.
+```bash
+snakemake -npr
+```
+
+### 6.  Make a DAG diagram.
+```bash
+snakemake --dag | dot -Tpdf > dag.pdf
+```
+
+### 7.  Run on cluster with slurm.
+This snakemake pipeline could be executed without slurm, but if an hpc with slurm is used, the following will start the pipeline with the parameters defined in the config/cluster_config.yml file.
+```bash
+sbatch --wrap="\
+snakemake \
+-R \
+-j 999 \
+--cluster-config config/cluster_config.yml \
+--cluster '\
+sbatch \
+-A {cluster.account} \
+-p {cluster.partition} \
+--cpus-per-task {cluster.cpus-per-task}  \
+--mem {cluster.mem} \
+--output {cluster.output}'"
+```
+
+### 8.  Check results, and when finished, exit environment.
+The results will be saved to the "results" folder. Look over log files generated in either the logs/ or logs/snakelogs folders (depending on whether slurm was used).
+```bash
+conda deactivate
+```
 
 ## Citations
 
