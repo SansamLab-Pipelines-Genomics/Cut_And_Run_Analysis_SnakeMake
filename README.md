@@ -1,4 +1,4 @@
-# Cut&Run and ChipSeq Pipeline
+# Cut&Run Pipeline
 
 
 ## Project Description
@@ -170,16 +170,41 @@ bamCoverage \
 #### macs2 narrow
 
 ```bash
+macs2 callpeak \
+  -t ${TreatedFileNames[i]} \
+  -c ${ControlFileNames[i]} \
+  -f BAMPE \
+  -g 2827437033 \
+  -n ${SampleNames[i]} \
+  --outdir macs2_normalPeaks
 ```
 
 #### macs2 broad
 
 ```bash
+macs2 callpeak \
+  -t ${TreatedFileNames[i]} \
+  -c ${ControlFileNames[i]} \
+  --broad \
+  -f BAMPE \
+  -g 2827437033 \
+  -n ${SampleNames[i]} \
+  --outdir macs2_broadpeaks"
 ```
 
 #### sicer
 
 ```bash
+sicer \
+  -t {input.treatment} \
+  -c {input.control} \
+  -s {params.sicer_genome} \
+  -w {params.sicer_windowSize} \
+  -f {params.sicer_fragmentSize} \
+  -fdr {params.sicer_fdr} \
+  -o results/sicer/ \
+  -g {params.sicer_gapSize} \
+  -cpu 12
 ```
 
 ## Step-by-step instructions on running Snakemake pipeline:
@@ -234,7 +259,13 @@ You must enter paths to the following:
 
 #### 4B.  Modify the config/samples.csv file
 
-The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files.
+The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 3 is the sample type (either "treatment" or "control"). Column 5 is the name of the Control sample for each treatment or "NA" for each control. In the example below, two samples share the same control.
+
+| sample      | fastq1              | fastq2              | sampleType | Control   |
+|-------------|---------------------|---------------------|------------|-----------|
+| testSample  | sample_R1.fastq.gz  | sample_R2.fastq.gz  | treatment  | testInput |
+| testSample2 | sample2_R1.fastq.gz | sample2_R2.fastq.gz | treatment  | testInput |
+| testInput   | input_R1.fastq.gz   | input_R2.fastq.gz   | control    | NA        |
 
 #### 4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file
 
