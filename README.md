@@ -8,32 +8,35 @@ This README details the individual steps of the pipeline. To run the automated p
 
 ## Table of Contents
 
-* [Requirements](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#requirements)
-* [Description of individual steps in pipeline](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#run-the-pipeline-step-by-step)
-  * [Trim reads with trimmomatic](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#1--trim-reads-with-trimmomatic)
-  * [Trim the reads further with cutadapt](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#2--trim-the-reads-further-with-cutadapt)
-  * [Align reads with bowtie2](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#1--trim-reads-with-trimmomatic)
-  * [Filter Alignments](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#1--trim-reads-with-trimmomatic)
-  * [Optional step:  Separate subject reads from spike-in reads](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#1--trim-reads-with-trimmomatic)
-  * [Make coverage files for genome viewer with deeptools](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#1--trim-reads-with-trimmomatic)
-  * [Call peaks with](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#5--call-peaks):
-    * [macs2 narrow](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#macs2-narrow)
-    * [macs2 broad](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#macs2-broad)
-    * [sicer](https://github.com/learn-bioinformatics/ChIPSeq-Cut-and-Run/edit/main/README.md#sicer)
+* [Requirements](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#requirements)
+* [Description of individual steps in pipeline](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#run-the-pipeline-step-by-step)
+  * [Trim reads with trimmomatic](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#1--trim-reads-with-trimmomatic)
+  * [Trim the reads further with cutadapt](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#2--trim-reads-further-with-cutadapt)
+  * [Align reads with bowtie2](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#3--align-reads-with-bowtie2)
+  * [Filter Alignments](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4--filter-alignments)
+  * [Optional step:  Separate subject reads from spike-in reads](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#optional-step--get-reads-from-specific-species)
+  * [Make coverage files for genome viewer with deeptools](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#5--make-coverage-files-for-genome-viewer-with-deeptools)
+  * [Call peaks with](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#5--call-peaks):
+    * [macs2 narrow](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#macs2-narrow)
+    * [macs2 broad](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#macs2-broad)
+    * [sicer](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#sicer)
 
-* [Step-by-step instructions on running Snakemake pipeline:](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#step-by-step-instructions-on-running-snakemake-pipeline)
-  * [1.  Load slurm and miniconda](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#1--load-slurm-and-miniconda)
-  * [2.  Clone repository](https://github.com/SansamLab/Process_HiC_SnakeMake#2--clone-repository)
-  * [3.  Start the conda environment](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#3--start-the-conda-environment)
-    * [3A.  FIRST TIME ONLY:  Setup conda environment](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#3a--first-time-only--setup-conda-environment)
-    * [3B.  Activate conda environment](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#3b--activate-conda-environment)
-  * [4.  Modify the job-specific configuration files.](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4--modify-the-job-specific-coniguration-files)
-    * [4A.  Modify the config/config.yml file](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4a--modify-the-configconfigyml-file)
-    * [4B.  Modify the config/samples.csv file](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4b--modify-the-configsamplescsv-file)
-    * [4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4c--if-slurm-resource-changes-are-needed-modify-the-configcluster_configyml-file)
-  * [5.  Do a dry run](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#4--do-a-dry-run)
-  * [6.  Make a DAG diagram](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#5--make-a-dag-diagram)
-  * [7.  Run on cluster with slurm](https://github.com/SansamLab/Process_HiC_SnakeMake/blob/main/README.md#6--run-on-cluster-with-slurm)
+* [Step-by-step instructions on running Snakemake pipeline:](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#step-by-step-instructions-on-running-snakemake-pipeline)
+  * [1.  Load slurm and miniconda](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#1--load-slurm-and-miniconda)
+  * [2.  Clone repository](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#2--clone-repository)
+  * [3.  Start the conda environment](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#3--start-the-conda-environment)
+    * [3A.  FIRST TIME ONLY:  Setup conda environment](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#3a--first-time-only--setup-conda-environment)
+    * [3B.  Activate conda environment](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#3b--activate-conda-environment)
+  * [4.  Modify the job-specific configuration files.](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4--modify-the-job-specific-configuration-files)
+    * [4A.  Modify the config/config.yml file](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4a--modify-the-configconfigyml-file)
+    * [4B.  Modify the config/samples.csv file](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4b--modify-the-configsamplescsv-file)
+    * [4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4c--if-slurm-resource-changes-are-needed-modify-the-configcluster_configyml-file)
+  * [5.  Do a dry run](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#5--do-a-dry-run)
+  * [6.  Make a DAG diagram](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#6--make-a-dag-diagram)
+  * [7.  Run on cluster with slurm](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#7--run-on-cluster-with-slurm)
+  * [8.  Check results, and when finished, exit environment](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#8--check-results-and-when-finished-exit-environment)
+* [Citations](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#citations)
+* [License](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#license)
 
 ## Requirements
 
@@ -105,6 +108,7 @@ cutadapt \
 
 ### 3.  Align reads with bowtie2.
 bowtie2 is our aligner. We will map our reads to the provided indexed genome. We then pipe the result from bowtie2 into samtools, with the -b and -S flags. -b will output the result as a BINARY sam file (.bam). Then we run samtools sort, which sorts the reads based on their genomic position.
+
 ```bash
 bowtie2 \
     --threads "${THREADS}"            `# Number of processing threads to use`\
@@ -139,6 +143,7 @@ samtools index ${SAMPLE}.sorted.filt.bam
 ### Optional step:  Get reads from specific species.
 Using awk, we generate the hg19.bed file. This is simply the Start Position (0) to the End Position of each chromosome, in nucleotide bases.
 We use it to extract only the human reads from the .bam file, which contains the chimera genome and all the non-human reads.
+
 ```
 # make human chromosomes bed file from hg19
 awk '{print $1 "\t0\t" $2}' /Volumes/shared-refs/hg19/hg19.fasta.fai > temp_hg19_bed
@@ -273,6 +278,7 @@ CPU and memory requests for each rule in the pipeline are detailed in this file.
 
 ### 5.  Do a dry run.
 A dry run produces a text output showing exactly what commands will be executed. Look this over carefully before submitting the full job. It is normal to see warnings about changes made to the code, input, and params.
+
 ```bash
 snakemake -npr
 ```
@@ -284,6 +290,7 @@ snakemake --dag | dot -Tpdf > dag.pdf
 
 ### 7.  Run on cluster with slurm.
 This snakemake pipeline could be executed without slurm, but if an hpc with slurm is used, the following will start the pipeline with the parameters defined in the config/cluster_config.yml file.
+
 ```bash
 sbatch --wrap="\
 snakemake \
@@ -301,14 +308,28 @@ sbatch \
 
 ### 8.  Check results, and when finished, exit environment.
 The results will be saved to the "results" folder. Look over log files generated in either the logs/ or logs/snakelogs folders (depending on whether slurm was used).
+
 ```bash
 conda deactivate
 ```
 
 ## Citations
 
-Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: A flexible trimmer for Illumina Sequence Data. Bioinformatics, btu170.
+Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: A flexible trimmer for Illumina sequence data. Bioinformatics, 30(15), 2114–2120. https://doi.org/10.1093/bioinformatics/btu170
 
+Martin, M. (2011). Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet.Journal, 17(1), 10. https://doi.org/10.14806/ej.17.1.200
+
+Langmead, B., & Salzberg, S. L. (2012). Fast gapped-read alignment with Bowtie 2. Nature Methods, 9(4), 357–359. https://doi.org/10.1038/nmeth.1923
+
+Danecek, P., Bonfield, J. K., Liddle, J., Marshall, J., Ohan, V., Pollard, M. O., Whitwham, A., Keane, T., McCarthy, S. A., Davies, R. M., & Li, H. (2021). Twelve years of samtools and bcftools. GigaScience, 10(2), giab008. https://doi.org/10.1093/gigascience/giab008
+
+Tarasov, A., Vilella, A. J., Cuppen, E., Nijman, I. J., & Prins, P. (2015). Sambamba: Fast processing of NGS alignment formats. Bioinformatics, 31(12), 2032–2034. https://doi.org/10.1093/bioinformatics/btv098
+
+Ramírez, F., Ryan, D. P., Grüning, B., Bhardwaj, V., Kilpert, F., Richter, A. S., Heyne, S., Dündar, F., & Manke, T. (2016). Deeptools2: A next generation web server for deep-sequencing data analysis. Nucleic Acids Research, 44(W1), W160–W165. https://doi.org/10.1093/nar/gkw257
+
+Köster, J., & Rahmann, S. (2012). Snakemake—A scalable bioinformatics workflow engine. Bioinformatics (Oxford, England), 28(19), 2520–2522. https://doi.org/10.1093/bioinformatics/bts480
+
+Anaconda Software Distribution. (2020). Anaconda Documentation. Anaconda Inc. Retrieved from https://docs.anaconda.com/
 
 ## Credits
 
