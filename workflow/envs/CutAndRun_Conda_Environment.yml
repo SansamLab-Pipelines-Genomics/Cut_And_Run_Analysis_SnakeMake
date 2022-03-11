@@ -1,4 +1,4 @@
-name: /Volumes/Sansam/hpc-nobackup/condaEnvs/cut_and_run
+name: /s/sansam-lab/CutAndRun_Conda_Environment
 channels:
   - conda-forge
   - bioconda
@@ -6,6 +6,7 @@ channels:
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=1_gnu
+  - _r-mutex=1.0.1=anacondar_1
   - aioeasywebdav=2.4.0=pyha770c72_0
   - aiohttp=3.8.1=py39h3811e60_0
   - aiosignal=1.2.0=pyhd8ed1ab_0
@@ -144,6 +145,7 @@ dependencies:
   - libzlib=1.2.11=h36c2ea0_1013
   - logmuse=0.2.6=pyh8c360ce_0
   - lz4-c=1.9.3=h9c3ff4c_1
+  - macs2=2.2.7.1=py39hbf8eff0_4
   - markupsafe=2.1.0=py39hb9d737c_0
   - matplotlib-base=3.4.3=py39h2fa2bec_2
   - multidict=6.0.2=py39h3811e60_0
@@ -198,6 +200,7 @@ dependencies:
   - pytz=2021.3=pyhd8ed1ab_0
   - pyu2f=0.1.5=pyhd8ed1ab_0
   - pyyaml=6.0=py39h3811e60_3
+  - r-base=3.2.2=0
   - ratelimiter=1.2.0=py_1002
   - readline=8.1=h46c0cb4_0
   - requests=2.27.1=pyhd8ed1ab_0
@@ -256,4 +259,4 @@ dependencies:
   - zipp=3.7.0=pyhd8ed1ab_1
   - zlib=1.2.11=h36c2ea0_1013
   - zstd=1.5.2=ha95c52a_0
-prefix: /Volumes/Sansam/hpc-nobackup/condaEnvs/cut_and_run
+prefix: /s/sansam-lab/CutAndRun_Conda_Environment
