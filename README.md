@@ -176,25 +176,27 @@ bamCoverage \
 
 ```bash
 macs2 callpeak \
-  -t ${TreatedFileNames[i]} \
-  -c ${ControlFileNames[i]} \
-  -f BAMPE \
-  -g 2827437033 \
-  -n ${SampleNames[i]} \
-  --outdir macs2_normalPeaks
+    -t {input.treatment} \
+    -c {input.control} \
+    -f BAMPE \
+    -g {params.effective_genome_size} \
+    -n {params.sample_name}"_"{params.minimum_FDR_cutoff} \
+    -q {params.minimum_FDR_cutoff} \
+    --outdir results/macs2_normalPeaks/
 ```
 
 #### macs2 broad
 
 ```bash
 macs2 callpeak \
-  -t ${TreatedFileNames[i]} \
-  -c ${ControlFileNames[i]} \
-  --broad \
-  -f BAMPE \
-  -g 2827437033 \
-  -n ${SampleNames[i]} \
-  --outdir macs2_broadpeaks"
+    -t {input.treatment} \
+    -c {input.control} \
+    -f BAMPE \
+    -g {params.effective_genome_size} \
+    -n {params.sample_name}"_"{params.minimum_FDR_cutoff} \
+    -q {params.minimum_FDR_cutoff} \
+    --broad \
+    --outdir results/macs2_broadPeaks/
 ```
 
 #### sicer
