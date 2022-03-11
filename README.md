@@ -329,6 +329,14 @@ Tarasov, A., Vilella, A. J., Cuppen, E., Nijman, I. J., & Prins, P. (2015). Samb
 
 Ramírez, F., Ryan, D. P., Grüning, B., Bhardwaj, V., Kilpert, F., Richter, A. S., Heyne, S., Dündar, F., & Manke, T. (2016). Deeptools2: A next generation web server for deep-sequencing data analysis. Nucleic Acids Research, 44(W1), W160–W165. https://doi.org/10.1093/nar/gkw257
 
+Zang, C., Schones, D. E., Zeng, C., Cui, K., Zhao, K., & Peng, W. (2009). A clustering approach for identification of enriched domains from histone modification ChIP-Seq data. Bioinformatics, 25(15), 1952–1958. https://doi.org/10.1093/bioinformatics/btp340
+
+Zhang, Y., Liu, T., Meyer, C. A., Eeckhoute, J., Johnson, D. S., Bernstein, B. E., Nusbaum, C., Myers, R. M., Brown, M., Li, W., & Liu, X. S. (2008). Model-based analysis of chip-seq(Macs). Genome Biology, 9(9), R137. https://doi.org/10.1186/gb-2008-9-9-r137
+
+Amemiya, H. M., Kundaje, A., & Boyle, A. P. (2019). The encode blacklist: Identification of problematic regions of the genome. Scientific Reports, 9(1), 9354. https://doi.org/10.1038/s41598-019-45839-z
+
+Boyle, A. (2018). Boyle-lab/blacklist: Official encode blacklist release for publication. Zenodo. https://doi.org/10.5281/ZENODO.1491733
+
 Köster, J., & Rahmann, S. (2012). Snakemake—A scalable bioinformatics workflow engine. Bioinformatics (Oxford, England), 28(19), 2520–2522. https://doi.org/10.1093/bioinformatics/bts480
 
 Anaconda Software Distribution. (2020). Anaconda Documentation. Anaconda Inc. Retrieved from https://docs.anaconda.com/
