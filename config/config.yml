@@ -4,7 +4,7 @@ trimmomatic_adapterfile: "/usr/local/analysis/trimmomatic/0.35/lib/adapters/TruS
 # cutadapt options
 cutadapt_adapterfile: "/usr/local/analysis/trimmomatic/0.35/lib/adapters/TruSeq3-PE-2.fa"
 # bowtie2 options
-bowtie2_genome: "/Volumes/Sansam/hpc-nobackup/bowtie2Indexes/hg38_ecoli_sacCer3_bowtie2Index/hg38_ecoli_sacCer3.fasta"
+bowtie2_genome: "/Volumes/Sansam/hpc-nobackup/bowtie2Indexes/hg38_ecoli_sacCer3_bowtie2Index/hg38_ecoli_sacCer3"
 bowtie2_threads: 12
 bowtie2_samtools_threads: 12
 # sicer options:
