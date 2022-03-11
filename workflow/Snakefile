@@ -41,7 +41,9 @@ rule all:
         expand("results/trimmed/{sample}_trimmed_R1.fastq.gz", sample = samples_table.index),
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
         expand("results/aligned/{sample}.bam", sample = samples_table.index),
-        expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = samples_table2.index)
+        expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = samples_table2.index),
+        expand("results/macs2_normalPeaks/{sample}_" + str(config["macs2_minimum_FDR_cutoff"]) + "_peaks.narrowPeak", sample = samples_table2.index),
+        expand("results/macs2_broadPeaks/{sample}_" + str(config["macs2_broad_minimum_FDR_cutoff"]) + "_peaks.broadPeak", sample = samples_table2.index)
 
 # run fastqc on fastq.gz files before trimming
 rule fastqc_reads:
@@ -161,6 +163,67 @@ rule call_peaks_with_sicer:
     log: "results/logs/snakelogs/call_peaks_with_sicer.{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + ".log"
     shell:
         """
-        ml sicer2
-        sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
+        sicer -t {input.treatment} \
+            -c {input.control} \
+            -s {params.sicer_genome} \
+            -w {params.sicer_windowSize} \
+            -f {params.sicer_fragmentSize} \
+            -fdr {params.sicer_fdr} \
+            -o results/sicer/ \
+            -g {params.sicer_gapSize} \
+            -cpu 12
+        """
+
+    
+# call narrow peaks with macs2
+
+rule call_narrow_peaks_with_macs2:
+    input:
+        unpack(sample_type_dict_from_sample)   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        "results/macs2_normalPeaks/{sample}_" + str(config["macs2_minimum_FDR_cutoff"]) + "_peaks.narrowPeak"
+    params:
+        effective_genome_size=config["macs2_effective_genome_size"],
+        minimum_FDR_cutoff=str(config["macs2_minimum_FDR_cutoff"]),
+        sample_name="{sample}"
+    conda:
+        "envs/qc_trim_align.yml"
+    log: "results/logs/snakelogs/call_narrow_peaks_with_macs2.{sample}_q" + str(config["macs2_minimum_FDR_cutoff"]) + ".log"
+    shell:
+        """
+        macs2 callpeak \
+            -t {input.treatment} \
+            -c {input.control} \
+            -f BAMPE \
+            -g {params.effective_genome_size} \
+            -n {params.sample_name}"_"{params.minimum_FDR_cutoff} \
+            -q {params.minimum_FDR_cutoff} \
+            --outdir results/macs2_normalPeaks/
+        """
+
+# call broad peaks with macs2
+
+rule call_broad_peaks_with_macs2:
+    input:
+        unpack(sample_type_dict_from_sample)   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        "results/macs2_broadPeaks/{sample}_" + str(config["macs2_broad_minimum_FDR_cutoff"]) + "_peaks.broadPeak"
+    params:
+        effective_genome_size=config["macs2_effective_genome_size"],
+        minimum_FDR_cutoff=config["macs2_broad_minimum_FDR_cutoff"],
+        sample_name="{sample}"
+    conda:
+        "envs/qc_trim_align.yml"
+    log: "results/logs/snakelogs/call_broad_peaks_with_macs2.{sample}_q" + str(config["macs2_broad_minimum_FDR_cutoff"]) + ".log"
+    shell:
+        """
+        macs2 callpeak \
+            -t {input.treatment} \
+            -c {input.control} \
+            -f BAMPE \
+            -g {params.effective_genome_size} \
+            -n {params.sample_name}"_"{params.minimum_FDR_cutoff} \
+            -q {params.minimum_FDR_cutoff} \
+            --broad \
+            --outdir results/macs2_broadPeaks/
         """
