@@ -39,3 +39,18 @@ call_peaks_with_sicer:
     output: results/logs/{rule}.{wildcards.sample}.log
     error: results/logs/{rule}.{wildcards.sample}.err
 
+call_narrow_peaks_with_macs2:
+    cpus-per-task: 2
+    mem:  16G
+    cores: 12
+    name: "{rule}.{wildcards.sample}"
+    output: results/logs/{rule}.{wildcards.sample}.log
+    error: results/logs/{rule}.{wildcards.sample}.err
+    
+call_broad_peaks_with_macs2:
+    cpus-per-task: 2
+    mem:  16G
+    cores: 2
+    name: "{rule}.{wildcards.sample}"
+    output: results/logs/{rule}.{wildcards.sample}.log
+    error: results/logs/{rule}.{wildcards.sample}.err
