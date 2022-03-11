@@ -129,18 +129,17 @@ rule align_reads_with_bowtie2:
         """
         ml bowtie2
         bowtie2 \
-            --threads {params.bowtie2_threads}            `# Number of processing threads to use`\
-            --dovetail                        `# Allow overhanging overlaps between R1 and R2 reads (may have resulted from quality trimming)`\
-            --phred33                         `# Use the typical quality score scheme`\
-            --maxins 2000                     `# Maximum fragment size, including the forward and reverse read and any sequence between them`\
-            -x {params.bowtie2_genome}           `# bowtie2 genome index`\
-            -1 {input.R1} `# input forward reads`\
-            -2 {input.R2} `# input reverse reads`\
-            |                                 `# pipe`\
-        samtools view -b -                    `# convert standard input to Binary Alignment Format`\
-            |                                 `# pipe`\
-        samtools sort --threads {params.bowtie2_samtools_threads} - -o {output.bam} `# Sort BAM file`\
-                                               #*End of bowtie2 through samtools piped commands*#
+        --threads {params.bowtie2_threads} \
+        --dovetail \
+        --phred33 \
+        --maxins 2000 \
+        -x {params.bowtie2_genome} \
+        -1 {input.R1} \
+        -2 {input.R2} \
+        | \
+        samtools view -b - \
+        | \
+        samtools sort --threads {params.bowtie2_samtools_threads} - -o {output.bam}
         # Index BAM file
         samtools index {output.bam}
         """
