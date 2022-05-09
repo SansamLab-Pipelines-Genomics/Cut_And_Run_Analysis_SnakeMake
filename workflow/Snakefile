@@ -12,7 +12,7 @@ configfile: "config/config.yml"
 import pandas as pd
 
 # this reads the CSV file and sets an index using the values in the "sample" column.
-samples_table = pd.read_csv("config/samples.csv").set_index("sample", drop=False)
+samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False)
 
 # fastq filename input function definition set to Python dictionary
 def fq_dict_from_sample(wildcards):
