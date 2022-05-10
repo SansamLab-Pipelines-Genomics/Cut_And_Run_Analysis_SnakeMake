@@ -144,6 +144,34 @@ rule align_reads_with_bowtie2:
         samtools index {output.bam}
         """
 
+# get human reads
+#########work on this
+
+rule get_human_reads:
+    input:
+        unpack(sample_type_dict_from_sample)   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        "results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak"
+    params:
+        effective_genome_size=config["macs2_effective_genome_size"],
+        minimum_FDR_cutoff=config["macs2_broad_minimum_FDR_cutoff"],
+        sample_name="{sample}"
+    conda:
+        "envs/CutAndRun_Conda_Environment.yml"
+    log: "results/logs/snakelogs/call_broad_peaks_with_macs2.{sample}_q" + str(config["macs2_broad_minimum_FDR_cutoff"]) + ".log"
+    shell:
+        """
+        macs2 callpeak \
+            -t {input.treatment} \
+            -c {input.control} \
+            -f BAMPE \
+            -g {params.effective_genome_size} \
+            -n {params.sample_name}"_"{params.minimum_FDR_cutoff} \
+            -q {params.minimum_FDR_cutoff} \
+            --broad \
+            --outdir results/macs2_broadPeaks/
+        """
+        
 # call peaks with sicer
 
 rule call_peaks_with_sicer:
@@ -226,3 +254,6 @@ rule call_broad_peaks_with_macs2:
             --broad \
             --outdir results/macs2_broadPeaks/
         """
+
+
+        
