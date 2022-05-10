@@ -27,8 +27,8 @@ samples_table2 = samples_table.loc[samples_table['sampleType'] == 'treatment']
 # sample_type input function definition set to Python dictionary
 def sample_type_dict_from_sample(wildcards):
   return {
-    "treatment": 'results/aligned/' + samples_table2.loc[wildcards.sample, "sample"] + '.bam',
-    "control": 'results/aligned/' + samples_table2.loc[wildcards.sample, "Control"] + '.bam'
+    "treatment": 'results/aligned_speciesOfInterest/' + samples_table2.loc[wildcards.sample, "sample"] + '.bam',
+    "control": 'results/aligned_speciesOfInterest/' + samples_table2.loc[wildcards.sample, "Control"] + '.bam'
   }
 
 ##################################################################
@@ -159,7 +159,8 @@ rule get_species_of_interest_reads:
     log: "results/logs/snakelogs/call_broad_peaks_with_macs2.{sample}_q" + str(config["macs2_broad_minimum_FDR_cutoff"]) + ".log"
     shell:
         """
-        samtools view -bS -ML {params.chromosomeSizes} {input.bam} > {output.bam}
+        samtools view --threads {params.bowtie2_samtools_threads} -bS -ML {params.chromosomeSizes} {input.bam} > {output.bam}
+        samtools index {output.bam}
         """
         
 # call peaks with sicer
