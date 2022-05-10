@@ -17,6 +17,10 @@ zcat GCF_000008865.2_ASM886v2_genomic.fna.gz | sed 's/>/>EC_/g' > ec.fasta
 cat dm.fasta ec.fasta | gzip > dm_ec.fna.gz
 zcat GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set.fna.gz dm_ec.fna.gz > GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set_dm_ec.fna
 
+# make directory for index
+mkdir hg38_ecoli_dm_bowtie2Index
+cd hg38_ecoli_dm_bowtie2Index
+
 # index combined genome with bowtie2
 ## start the bowtie2 aligner....ie "ml bowtie2"
 bowtie2-build --threads 8 GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set_dm_ec.fna hg38_ecoli_dm_bowtie2Index
