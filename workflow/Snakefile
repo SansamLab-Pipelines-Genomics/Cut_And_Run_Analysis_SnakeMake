@@ -215,7 +215,7 @@ rule call_narrow_peaks_with_macs2:
             -c {input.control} \
             -f BAMPE \
             -g {params.effective_genome_size} \
-            -n {params.sample_name}"_"{params.minimum_FDR_cutoff} \
+            -n {params.sample_name}_{params.minimum_FDR_cutoff} \
             -q {params.minimum_FDR_cutoff} \
             --outdir results/macs2_normalPeaks/
         """
@@ -241,7 +241,7 @@ rule call_broad_peaks_with_macs2:
             -c {input.control} \
             -f BAMPE \
             -g {params.effective_genome_size} \
-            -n {params.sample_name}"_"{params.minimum_FDR_cutoff} \
+            -n {params.sample_name}_{params.minimum_FDR_cutoff} \
             -q {params.minimum_FDR_cutoff} \
             --broad \
             --outdir results/macs2_broadPeaks/
