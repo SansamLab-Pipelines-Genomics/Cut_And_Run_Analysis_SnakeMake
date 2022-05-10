@@ -157,7 +157,7 @@ rule get_species_of_interest_reads:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
     conda:
         "envs/CutAndRun_Conda_Environment.yml"
-    log: "results/logs/snakelogs/call_broad_peaks_with_macs2.{sample}_q" + str(config["macs2_broad_minimum_FDR_cutoff"]) + ".log"
+    log: "results/logs/snakelogs/get_species_of_interest_reads.{sample}.log"
     shell:
         """
         samtools view --threads {params.bowtie2_samtools_threads} -bS -ML {params.chromosomeSizes} {input.bam} > {output.bam}
