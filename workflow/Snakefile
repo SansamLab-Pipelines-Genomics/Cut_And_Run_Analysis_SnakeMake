@@ -153,7 +153,8 @@ rule get_species_of_interest_reads:
     output:
         bam="results/aligned_speciesOfInterest/{sample}.bam"
     params:
-        chromosomeSizes="resources/chromosome_sizes/" + str(config["genome_of_interest"]) + ".chrom.sizes"
+        chromosomeSizes="resources/chromosome_sizes/" + str(config["genome_of_interest"]) + ".chrom.sizes",
+        bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
     conda:
         "envs/CutAndRun_Conda_Environment.yml"
     log: "results/logs/snakelogs/call_broad_peaks_with_macs2.{sample}_q" + str(config["macs2_broad_minimum_FDR_cutoff"]) + ".log"
