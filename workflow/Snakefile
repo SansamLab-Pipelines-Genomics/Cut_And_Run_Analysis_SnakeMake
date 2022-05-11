@@ -262,7 +262,7 @@ rule make_bigwigs_no_spikein:
       bl=config["blacklist_file"]
     conda:
         "envs/deeptools.yml"
-    log: "results/logs/snakelogs/make_bigwigs_no_spikein.log"
+    log: "results/logs/snakelogs/make_bigwigs_no_spikein_{sample}.log"
     shell:
       """
       bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads
