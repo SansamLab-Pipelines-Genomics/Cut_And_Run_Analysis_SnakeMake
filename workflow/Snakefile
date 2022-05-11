@@ -46,7 +46,8 @@ rule all:
         expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = samples_table2.index),
         expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = samples_table2.index),
         expand("results/bigwigs_no_spikein/{sample}.bw", sample = samples_table.index),
-        expand("results/scale_factors/{sample}_scaleFactor.txt", sample = samples_table.index)
+        expand("results/scale_factors/{sample}_scaleFactor.txt", sample = samples_table.index),
+        expand("results/bigwigs_spikein/{sample}.bw", sample = samples_table.index)
 
 # run fastqc on fastq.gz files before trimming
 rule fastqc_reads:
