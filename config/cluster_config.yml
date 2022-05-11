@@ -4,12 +4,12 @@ __default__:
     partition: serial
     time: 08:00:00 # time limit for each job
     cpus-per-task: 2
-    mem:  16G
+    mem: 16G
     output: results/logs/slurm-%x.%A.%a.log
 
 trim_reads_with_trimmomatic:
     cpus-per-task: 8
-    mem:  64G
+    mem: 64G
     cores: 8
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
@@ -17,7 +17,7 @@ trim_reads_with_trimmomatic:
 
 trim_reads_with_cutadapt:
     cpus-per-task: 8
-    mem:  64G
+    mem: 64G
     cores: 8
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
@@ -25,7 +25,7 @@ trim_reads_with_cutadapt:
 
 align_reads_with_bowtie2:
     cpus-per-task: 12
-    mem:  96G
+    mem: 96G
     cores: 12
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
@@ -33,7 +33,7 @@ align_reads_with_bowtie2:
 
 call_peaks_with_sicer:
     cpus-per-task: 12
-    mem:  96G
+    mem: 96G
     cores: 12
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
@@ -41,7 +41,7 @@ call_peaks_with_sicer:
 
 call_narrow_peaks_with_macs2:
     cpus-per-task: 2
-    mem:  16G
+    mem: 16G
     cores: 12
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
@@ -49,7 +49,7 @@ call_narrow_peaks_with_macs2:
     
 call_broad_peaks_with_macs2:
     cpus-per-task: 2
-    mem:  16G
+    mem: 16G
     cores: 2
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
@@ -57,7 +57,7 @@ call_broad_peaks_with_macs2:
 
 make_bigwigs_no_spikein:
     cpus-per-task: 8
-    mem:  16G
+    mem: 16G
     cores: 8
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
@@ -65,7 +65,7 @@ make_bigwigs_no_spikein:
     
  make_bigwigs_with_spikein:
     cpus-per-task: 8
-    mem:  16G
+    mem: 16G
     cores: 8
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
