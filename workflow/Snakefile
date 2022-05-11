@@ -178,7 +178,7 @@ rule call_peaks_with_sicer:
         sicer_fdr=config["sicer_fdr"],
         sicer_gapSize=config["sicer_gapSize"]
     conda:
-        "envs/callPeaks.yml"
+        "envs/sicer2.yml"
     log: "results/logs/snakelogs/call_peaks_with_sicer.{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + ".log"
     shell:
         """
