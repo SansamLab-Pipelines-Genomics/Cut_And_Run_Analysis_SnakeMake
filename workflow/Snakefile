@@ -285,7 +285,7 @@ rule calculate_spikein_scale_factors:
       scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
       echo "spike in read counts = ${{spike_in_counts}}" > {output}_tmp
       echo "scale factor = ${{scale_factor}}" >> {output}_tmp
-		  printf "%8.4f\n" "${{scale_factor}}" >> {output}_tmp
+		  printf "%8.4f\\n" "${{scale_factor}}" >> {output}_tmp
       mv {output}_tmp {output}
       """
 
