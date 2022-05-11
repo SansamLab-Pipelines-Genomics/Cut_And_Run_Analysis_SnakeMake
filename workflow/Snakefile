@@ -249,9 +249,9 @@ rule call_broad_peaks_with_macs2:
         """
 
 
-  # make bigwigs without spike-in normalization
+# make bigwigs without spike-in normalization
   
-  rule make_bigwigs_no_spikein:
+rule make_bigwigs_no_spikein:
     input:
       bam="results/aligned_speciesOfInterest/{sample}.bam"
     output:
