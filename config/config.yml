@@ -2,6 +2,10 @@
 samples_csv: "config/samples.csv"
 # genome-of-interest (must be dm6, danRer7, danRer10, danRer11, hg19, hg38, mm9, mm10, or mm39)
 genome_of_interest: "hg38"
+# effective genome size
+## for effective genome sizes see: https://deeptools.readthedocs.io/en/develop/content/feature/effectiveGenomeSize.html
+effective_genome_size: 2913022398
+blacklist_file: "resources/hg38-blacklist.v2.bed"
 # trimmomatic options:
 trimmomatic_threads: 8
 trimmomatic_adapterfile: "/usr/local/analysis/trimmomatic/0.35/lib/adapters/TruSeq3-PE-2.fa"
@@ -17,11 +21,10 @@ sicer_windowSize: 200
 sicer_fragmentSize: 150
 sicer_fdr: 0.01
 sicer_gapSize: 600
-blacklist_file: "resources/hg38-blacklist.v2.bed"
 # macs2 options
-## for effective genome sizes see: https://deeptools.readthedocs.io/en/develop/content/feature/effectiveGenomeSize.html
-macs2_effective_genome_size: 2913022398
 # macs2 "normal" options
 macs2_minimum_FDR_cutoff: 0.05
 # macs2 "broad" options
 macs2_broad_minimum_FDR_cutoff: 0.1
+# bamCoverage options
+bamCoverage_binSize: 100
