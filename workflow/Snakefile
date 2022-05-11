@@ -281,9 +281,12 @@ rule calculate_spikein_scale_factors:
     log: "results/logs/snakelogs/calculate_spikein_scale_factors_{sample}.log"
     shell:
       """
+      total_counts=$(samtools idxstats {input.bam} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
       spike_in_counts=$(samtools idxstats {input.bam} | grep {params.px} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
+      spike_in_percentage=$(echo "scale=3; $spike_in_counts/$total_counts" | bc )
       scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
       echo "spike in read counts = ${{spike_in_counts}}" > {output}_tmp
+      echo "spike in percentage = ${{spike_in_percentage}}" >> {output}_tmp
       echo "scale factor = ${{scale_factor}}" >> {output}_tmp
       printf "%8.4f\\n" "${{scale_factor}}" >> {output}_tmp
       mv {output}_tmp {output}
@@ -291,7 +294,7 @@ rule calculate_spikein_scale_factors:
 
 rule make_bigwigs_with_spikein:
     input:
-      bam0="results/aligned/{sample}.bam",
+      scale="results/scale_factors/{sample}_scaleFactor.txt",
       bam="results/aligned_speciesOfInterest/{sample}.bam"
     output:
       bw="results/bigwigs_spikein/{sample}.bw"
@@ -305,7 +308,6 @@ rule make_bigwigs_with_spikein:
     log: "results/logs/snakelogs/make_bigwigs_with_spikein_{sample}.log"
     shell:
       """
-      spike_in_counts=$(samtools idxstats {input.bam0} | grep {params.px} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
-      scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
+      scale_factor=$(grep scale {input.scale} | sed 's/scale factor = //g')
       bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
       """
