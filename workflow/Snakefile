@@ -45,7 +45,8 @@ rule all:
         #expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = samples_table2.index),
         expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = samples_table2.index),
         expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = samples_table2.index),
-        expand("results/bigwigs_no_spikein/{sample}.bw", sample = samples_table.index)
+        expand("results/bigwigs_no_spikein/{sample}.bw", sample = samples_table.index),
+        expand("results/scale_factors/{sample}_scaleFactor.txt", sample = samples_table.index)
 
 # run fastqc on fastq.gz files before trimming
 rule fastqc_reads:
@@ -266,4 +267,45 @@ rule make_bigwigs_no_spikein:
     shell:
       """
       bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads
+      """
+
+rule calculate_spikein_scale_factors:
+    input:
+      bam="results/aligned/{sample}.bam"
+    output:
+      "results/scale_factors/{sample}_scaleFactor.txt"
+    params:
+      px=config["spike_in_chrom_prefix"]
+    conda:
+        "envs/samtools.yml"
+    log: "results/logs/snakelogs/calculate_spikein_scale_factors_{sample}.log"
+    shell:
+      """
+      spike_in_counts=$(samtools idxstats {input.bam} | grep {params.px} | awk -F'\t' '{sum+=$3;} END{print sum;}')
+      scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
+      echo "spike in read counts = ${{spike_in_counts}}" > {output}_tmp
+      echo "scale factor = ${{scale_factor}}" >> {output}_tmp
+		  printf "%8.4f\n" "${{scale_factor}}" >> {output}_tmp
+      mv {output}_tmp {output}
+      """
+
+rule make_bigwigs_with_spikein:
+    input:
+      bam0="results/aligned/{sample}.bam",
+      bam="results/aligned_speciesOfInterest/{sample}.bam"
+    output:
+      bw="results/bigwigs_spikein/{sample}.bw"
+    params:
+      gs=config["effective_genome_size"],
+      bs=config["bamCoverage_binSize"],
+      bl=config["blacklist_file"],
+      px=config["spike_in_chrom_prefix"]
+    conda:
+        "envs/deeptools.yml"
+    log: "results/logs/snakelogs/make_bigwigs_with_spikein_{sample}.log"
+     shell
+      """
+      spike_in_counts=$(samtools idxstats {input.bam0} | grep {params.px} | awk -F'\t' '{sum+=$3;} END{print sum;}')
+      scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
+      bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
       """
