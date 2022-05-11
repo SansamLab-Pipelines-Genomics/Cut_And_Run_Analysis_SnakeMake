@@ -281,7 +281,7 @@ rule calculate_spikein_scale_factors:
     log: "results/logs/snakelogs/calculate_spikein_scale_factors_{sample}.log"
     shell:
       """
-      spike_in_counts=$(samtools idxstats {input.bam} | grep {params.px} | awk -F'\t' '{sum+=$3;} END{print sum;}')
+      spike_in_counts=$(samtools idxstats {input.bam} | grep {params.px} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
       scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
       echo "spike in read counts = ${{spike_in_counts}}" > {output}_tmp
       echo "scale factor = ${{scale_factor}}" >> {output}_tmp
@@ -305,7 +305,7 @@ rule make_bigwigs_with_spikein:
     log: "results/logs/snakelogs/make_bigwigs_with_spikein_{sample}.log"
     shell:
       """
-      spike_in_counts=$(samtools idxstats {input.bam0} | grep {params.px} | awk -F'\t' '{sum+=$3;} END{print sum;}')
+      spike_in_counts=$(samtools idxstats {input.bam0} | grep {params.px} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
       scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
       bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
       """
