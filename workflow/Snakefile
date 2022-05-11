@@ -163,8 +163,10 @@ rule get_species_of_interest_reads:
     log: "results/logs/snakelogs/get_species_of_interest_reads.{sample}.log"
     shell:
         """
-        samtools view --threads {params.bowtie2_samtools_threads} -bS -ML {params.chromosomeSizes} {input.bam} > {output.bam}
+        awk -F '\t' '{ print $1,"1",$2 }' OFS='\t' {params.chromosomeSizes} > {output.bam}tmp.bed
+        samtools view --threads {params.bowtie2_samtools_threads} -bS -ML {output.bam}tmp.bed {input.bam} > {output.bam}
         samtools index {output.bam}
+        rm {output.bam}tmp.bed
         """
         
 # call peaks with sicer
