@@ -16,9 +16,7 @@
 </figure>
 
 ## Project Description
-This is a workflow for processing Cut and Run (modified ChiP-seq) data. Original workflow courtesy of the Sansam Lab.
-
-This README details the individual steps of the pipeline. To run the automated pipeline see the README about the bash script.
+Cut_And_Run_Analysis_SnakeMake processes short whole-genome sequencing reads from Cut&Run. The pipeline generates trimmed fastq files, genome alignments, coverage files, and peak calls. To enable step-by-step data processing, we describe each of the individual data processing steps. We provide a Snakemake pipeline with clearly defined dependencies and Anaconda environments to automate the pipeline. We include a compact dataset in the repository that you may use to test the pipeline. We also provide an example detailing how Cut_And_Run_Analysis_SnakeMake can be used to process publicly available Cut&Run data. The original workflow was provided courtesy of the Sansam Lab.
 
 ## Table of Contents
 
