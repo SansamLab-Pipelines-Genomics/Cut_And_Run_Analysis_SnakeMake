@@ -38,15 +38,11 @@ def sample_type_dict_from_sample(wildcards):
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here  
 rule all:
     input:
-        expand("results/aligned_speciesOfInterest/{sample}.bam", sample = samples_table.index),
-        expand("results/trimmed/{sample}_trimmed_R1.fastq.gz", sample = samples_table.index),
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
-        expand("results/aligned/{sample}.bam", sample = samples_table.index),
         expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = samples_table2.index),
         expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = samples_table2.index),
         expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = samples_table2.index),
         expand("results/bigwigs_no_spikein/{sample}.bw", sample = samples_table.index),
-        expand("results/scale_factors/{sample}_scaleFactor.txt", sample = samples_table.index),
         expand("results/bigwigs_spikein/{sample}.bw", sample = samples_table.index)
 
 # run fastqc on fastq.gz files before trimming
