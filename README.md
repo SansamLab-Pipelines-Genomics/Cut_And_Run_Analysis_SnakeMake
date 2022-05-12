@@ -1,6 +1,6 @@
 # Cut&Run Pipeline
 
-![Release](https://img.shields.io/github/v/release/SansamLab/Cut_And_Run_Analysis_SnakeMake)
+![Release](https://img.shields.io/github/v/release/SansamLab/Cut_And_Run_Analysis_SnakeMake?include_prereleases)
 ![ReleaseDate](https://img.shields.io/github/release-date/SansamLab/Cut_And_Run_Analysis_SnakeMake)
 ![Size](https://img.shields.io/github/repo-size/SansamLab/Cut_And_Run_Analysis_SnakeMake)
 ![License](https://img.shields.io/github/license/SansamLab/Cut_And_Run_Analysis_SnakeMake)
