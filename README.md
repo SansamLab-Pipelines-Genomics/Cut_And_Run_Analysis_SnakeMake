@@ -7,6 +7,7 @@
 ![LastCommit](https://img.shields.io/github/last-commit/SansamLab/Cut_And_Run_Analysis_SnakeMake)
 ![Downloads](https://img.shields.io/github/downloads/SansamLab/Cut_And_Run_Analysis_SnakeMake/total)
 ![OpenIssues](https://img.shields.io/github/issues-raw/SansamLab/Cut_And_Run_Analysis_SnakeMake)
+[![DOI](https://zenodo.org/badge/468099411.svg)](https://zenodo.org/badge/latestdoi/468099411)
 
 
 ## Project Description
