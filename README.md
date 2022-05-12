@@ -1,5 +1,3 @@
-# Cut&Run Pipeline
-
 ![Release](https://img.shields.io/github/v/release/SansamLab/Cut_And_Run_Analysis_SnakeMake?include_prereleases)
 ![ReleaseDate](https://img.shields.io/github/release-date/SansamLab/Cut_And_Run_Analysis_SnakeMake)
 ![Size](https://img.shields.io/github/repo-size/SansamLab/Cut_And_Run_Analysis_SnakeMake)
@@ -9,7 +7,13 @@
 ![OpenIssues](https://img.shields.io/github/issues-raw/SansamLab/Cut_And_Run_Analysis_SnakeMake)
 [![DOI](https://zenodo.org/badge/468099411.svg)](https://zenodo.org/badge/latestdoi/468099411)
 
-![CutAndRunGraphic](graphic.png)
+
+# Cut&Run Pipeline
+
+<figure>
+<img src="graphic.png" alt="Trulli" style="width:60%">
+<figcaption align = "bottom" style=" text-align : right">image made in BioRender.com</figcaption>
+</figure>
 
 ## Project Description
 This is a workflow for processing Cut and Run (modified ChiP-seq) data. Original workflow courtesy of the Sansam Lab.
