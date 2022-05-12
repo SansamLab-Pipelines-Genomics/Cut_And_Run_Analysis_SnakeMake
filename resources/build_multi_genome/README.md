@@ -20,7 +20,7 @@ This following prefixes are added to the chromosomes to parse reads aligning to 
 ml bowtie2
 sbatch --cpus-per-task 8 --mem 64Gb build_hg38_ec_dm_multi_genome.sh
 ```
-### build build_hg38_ec_multi_genome.sh
+### build_hg38_ec_multi_genome.sh
 #### Genomes:
 * Human:  GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set
 * E. coli:  GCF_000008865.2_ASM886v2_genomic
