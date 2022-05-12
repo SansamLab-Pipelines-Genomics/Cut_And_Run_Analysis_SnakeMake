@@ -17,4 +17,4 @@ cd hg38_ecoli_bowtie2Index
 
 # index combined genome with bowtie2
 ## start the bowtie2 aligner....ie "ml bowtie2"
-bowtie2-build --threads 8 GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set_ec.fna hg38_ecoli_bowtie2Index
+bowtie2-build --threads 8 ../GCA_000001405.15_GRCh38_no_alt_plus_hs38d1_analysis_set_ec.fna hg38_ecoli_bowtie2Index
