@@ -9,6 +9,7 @@
 ![OpenIssues](https://img.shields.io/github/issues-raw/SansamLab/Cut_And_Run_Analysis_SnakeMake)
 [![DOI](https://zenodo.org/badge/468099411.svg)](https://zenodo.org/badge/latestdoi/468099411)
 
+![CutAndRunGraphic](graphic.png)
 
 ## Project Description
 This is a workflow for processing Cut and Run (modified ChiP-seq) data. Original workflow courtesy of the Sansam Lab.
