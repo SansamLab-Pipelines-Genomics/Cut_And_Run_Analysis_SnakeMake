@@ -31,6 +31,23 @@ def sample_type_dict_from_sample(wildcards):
     "control": 'results/aligned_speciesOfInterest/' + samples_table2.loc[wildcards.sample, "Control"] + '.bam'
   }
 
+# this makes a function that returns a dictionary with merged filenames and bams to merge
+samples_table3 = samples_table[~samples_table['merged_sample'].isna()]
+samples_table4 = samples_table3[['sample','merged_sample']]
+samples_table4['sample'] = 'results/aligned/' + samples_table4['sample'].astype(str) + '.bam'
+grouped_by_merged = samples_table4.groupby(samples_table4['merged_sample'])
+samples_table5 = grouped_by_merged["sample"].agg([' '.join])
+samples_table5["merged_name"] = samples_table5.index
+samples_table6 = samples_table5.drop_duplicates(subset="merged_name",keep='first')
+
+def sample_indiv_dict_from_sampleMerged(wildcards):
+  return {
+    "bams_to_merge": samples_table6.loc[wildcards.merged_name, "join"]
+  }
+
+
+
+
 ##################################################################
 ##                           rules                              ##
 ##################################################################
@@ -127,7 +144,6 @@ rule align_reads_with_bowtie2:
     log: "results/logs/snakelogs/align_reads_with_bowtie2.{sample}.log"
     shell:
         """
-        ml bowtie2
         bowtie2 \
         --threads {params.bowtie2_threads} \
         --dovetail \
@@ -144,6 +160,26 @@ rule align_reads_with_bowtie2:
         samtools index {output.bam}
         """
 
+# merge replicates
+rule merge_replicates:
+    input:
+        unpack(sample_indiv_dict_from_sampleMerged),
+    ouput:
+        bam="results/aligned/{sample}_merged.bam",
+        bai="results/aligned/{sample}_merged.bam.bai"
+    params:
+        bams_to_merge=samples_table6.loc["{sample}", "join"],
+        bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
+    conda:
+        "envs/samtools.yml"
+    log: "results/logs/snakelogs/merge_replicates.{sample}.log"
+    shell:
+        """
+        samtools merge -o {output.bam} --threads {params.bowtie2_samtools_threads} {params.bams_to_merge}
+        # Index BAM file
+        samtools index {output.bam}
+        """
+        
 # get species of interest reads
 
 rule get_species_of_interest_reads:
