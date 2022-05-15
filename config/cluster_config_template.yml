@@ -30,6 +30,14 @@ align_reads_with_bowtie2:
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
     error: results/logs/{rule}.{wildcards.sample}.err
+    
+merge_replicates:
+    cpus-per-task: 12
+    mem: 96G
+    cores: 12
+    name: "{rule}.{wildcards.sample}"
+    output: results/logs/{rule}.{wildcards.sample}.log
+    error: results/logs/{rule}.{wildcards.sample}.err
 
 call_peaks_with_sicer:
     cpus-per-task: 12
