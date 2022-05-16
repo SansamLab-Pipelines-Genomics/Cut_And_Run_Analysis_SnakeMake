@@ -48,7 +48,10 @@ def sample_indiv_dict_from_sampleMerged(wildcards):
     "bams_to_merge": samples_to_merge().loc[wildcards.merged_name, "join"]
   }
 
-
+def bams_to_merge(wildcards):
+  samples_table.loc[:,'sample'] = 'results/aligned/' + samples_table.loc[:,'sample'].astype(str) + '.bam'
+  df = samples_table[samples_table["merged_sample"] == wildcards]
+  return df['sample'].tolist()
 
 ##################################################################
 ##                           rules                              ##
@@ -166,7 +169,7 @@ rule align_reads_with_bowtie2:
 # merge replicates
 rule merge_replicates:
     input:
-        bams_to_merge=samples_to_merge().loc["{sample}", "join"],
+        unpack(bams_to_merge),
         #unpack(sample_indiv_dict_from_sampleMerged),
     output:
         bam="results/aligned/{sample}_merged.bam",
