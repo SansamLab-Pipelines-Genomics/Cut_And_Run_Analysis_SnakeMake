@@ -34,11 +34,11 @@ def sample_type_dict_from_sample(wildcards):
 # this makes a sample table with samples to merge
 def samples_to_merge(table=samples_table):
   samples_table3 = table[~table['merged_sample'].isna()]
-  samples_table4 = samples_table3[['sample','merged_sample']]
-  samples_table4['sample'] = 'results/aligned/' + samples_table4['sample'].astype(str) + '.bam'
-  grouped_by_merged = samples_table4.groupby(samples_table4['merged_sample'])
+  samples_table4 = samples_table3.loc[:,('sample','merged_sample')]
+  samples_table4.loc[:,'sample'] = 'results/aligned/' + samples_table4.loc[:,'sample'].astype(str) + '.bam'
+  grouped_by_merged = samples_table4.groupby(samples_table4.loc[:,'merged_sample'])
   samples_table5 = grouped_by_merged["sample"].agg([' '.join])
-  samples_table5["merged_name"] = samples_table5.index
+  samples_table5.loc[:,"merged_name"] = samples_table5.index
   samples_table6 = samples_table5.drop_duplicates(subset="merged_name",keep='first')
   return samples_table6
 
