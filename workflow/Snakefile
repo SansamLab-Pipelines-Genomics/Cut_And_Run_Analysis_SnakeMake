@@ -50,7 +50,7 @@ def sample_indiv_dict_from_sampleMerged(wildcards):
 
 def bams_to_merge(wildcards):
   samples_table.loc[:,'sample'] = 'results/aligned/' + samples_table.loc[:,'sample'].astype(str) + '.bam'
-  df = samples_table[samples_table["merged_sample"] == wildcards]
+  df = samples_table[samples_table["merged_sample"] == wildcards[0]]
   return df['sample'].tolist()
 
 def keywords_to_merge(table=samples_table):
