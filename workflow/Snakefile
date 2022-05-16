@@ -178,7 +178,7 @@ rule merge_replicates:
     log: "results/logs/snakelogs/merge_replicates.{sample}.log"
     shell:
         """
-        samtools merge -o {output.bam} --threads {params.bowtie2_samtools_threads} {params.bams_to_merge}
+        samtools merge -o {output.bam} --threads {params.bowtie2_samtools_threads} {input.bams_to_merge}
         # Index BAM file
         samtools index {output.bam}
         """
