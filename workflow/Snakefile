@@ -51,8 +51,9 @@ def sample_indiv_dict_from_sampleMerged(wildcards):
 def bams_to_merge(wildcards):
   samples_table.loc[:,'sample'] = 'results/aligned/' + samples_table.loc[:,'sample'].astype(str) + '.bam'
   df = samples_table[samples_table["merged_sample"] == wildcards[0]]
-  return df['sample'].tolist()
-
+  lst = df['sample'].tolist()
+  return [str(i) for i in lst]
+   
 def keywords_to_merge(table=samples_table):
   samples_table3 = table[~table['merged_sample'].isna()]
   samples_table4 = samples_table3.drop_duplicates(subset="merged_sample",keep='first')
