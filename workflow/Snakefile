@@ -167,7 +167,7 @@ rule align_reads_with_bowtie2:
 rule merge_replicates:
     input:
         bams_to_merge=samples_to_merge().loc[{sample}, "join"],
-        unpack(sample_indiv_dict_from_sampleMerged),
+        #unpack(sample_indiv_dict_from_sampleMerged),
     output:
         bam="results/aligned/{sample}_merged.bam",
         bai="results/aligned/{sample}_merged.bam.bai"
