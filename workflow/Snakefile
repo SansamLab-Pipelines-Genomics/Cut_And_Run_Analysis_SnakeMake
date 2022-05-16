@@ -171,7 +171,7 @@ rule merge_replicates:
         bam="results/aligned/{sample}_merged.bam",
         bai="results/aligned/{sample}_merged.bam.bai"
     params:
-        bams_to_merge=samples_to_merge().loc["{sample}", "join"],
+        bams_to_merge=samples_to_merge().loc[{sample}, "join"],
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
     conda:
         "envs/samtools.yml"
