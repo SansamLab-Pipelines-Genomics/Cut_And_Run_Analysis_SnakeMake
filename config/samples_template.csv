@@ -1,5 +1,7 @@
-sample,fastq1,fastq2,sampleType,Control
+sample,fastq1,fastq2,sampleType,Control,merged_sample
 testSample1,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.fastq.gz,treatment,testInput,testSample
 testInput1,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA,testInput
 testSample2,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.fastq.gz,treatment,testInput,testSample
 testInput2,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA,testInput
+otherTestSample,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.fastq.gz,treatment,testInput,NA
+otherTestInput,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA,NA
