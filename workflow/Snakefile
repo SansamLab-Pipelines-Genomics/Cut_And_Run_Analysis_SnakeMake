@@ -16,9 +16,10 @@ samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=Fals
 
 # fastq filename input function definition set to Python dictionary
 def fq_dict_from_sample(wildcards):
+  wc=str(wildcards)
   return {
-    "fq1": samples_table.loc[wildcards.sample, "fastq1"],
-    "fq2": samples_table.loc[wildcards.sample, "fastq2"]
+    "fq1": samples_table.loc[wc.sample, "fastq1"],
+    "fq2": samples_table.loc[wc.sample, "fastq2"]
   }
 
 # this makes a new sample table with only the 'treatment' sample rows
