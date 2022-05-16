@@ -166,12 +166,12 @@ rule align_reads_with_bowtie2:
 # merge replicates
 rule merge_replicates:
     input:
+        bams_to_merge=samples_to_merge().loc[{sample}, "join"],
         unpack(sample_indiv_dict_from_sampleMerged),
     output:
         bam="results/aligned/{sample}_merged.bam",
         bai="results/aligned/{sample}_merged.bam.bai"
     params:
-        bams_to_merge=samples_to_merge().loc[{sample}, "join"],
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
     conda:
         "envs/samtools.yml"
