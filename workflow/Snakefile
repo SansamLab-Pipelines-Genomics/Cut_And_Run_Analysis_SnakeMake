@@ -186,7 +186,7 @@ rule merge_replicates:
         bai="results/aligned/{sample}_merged.bam.bai"
     params:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
-        inputs=bams_to_merge({sample}),
+        inputs=bams_to_merge("{sample}"),
     conda:
         "envs/samtools.yml"
     log: "results/logs/snakelogs/merge_replicates.{sample}.log"
