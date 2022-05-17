@@ -153,7 +153,7 @@ rule align_reads_with_bowtie2:
     output:
         bam="results/aligned/{sample}.bam",
         bai="results/aligned/{sample}.bam.bai",
-        touch("results/aligned/align_reads_with_bowtie2.done")
+        completion_marker=touch("results/aligned/align_reads_with_bowtie2.done")
         #bam="results/aligned/{sample,.*(?<!_merged)$}.bam",
         #bai="results/aligned/{sample,.*(?<!_merged)$}.bam.bai"
     conda:
