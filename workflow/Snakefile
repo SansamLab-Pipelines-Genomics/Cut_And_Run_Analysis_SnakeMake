@@ -153,7 +153,7 @@ rule align_reads_with_bowtie2:
     output:
         bam="results/aligned/{sample}.bam",
         bai="results/aligned/{sample}.bam.bai",
-        completion_marker=touch("results/aligned/align_reads_with_bowtie2.done")
+        completion_marker=touch("results/aligned/align_reads_with_bowtie2_{sample}.done")
         #bam="results/aligned/{sample,.*(?<!_merged)$}.bam",
         #bai="results/aligned/{sample,.*(?<!_merged)$}.bam.bai"
     conda:
@@ -180,8 +180,7 @@ rule align_reads_with_bowtie2:
 # merge replicates
 rule merge_replicates:
     input:
-        "results/aligned/align_reads_with_bowtie2.done",
-        #unpack(sample_indiv_dict_from_sampleMerged),
+        expand("results/aligned/align_reads_with_bowtie2_{sample}.done", sample = samples_table.index),
     output:
         bam="results/aligned_merged/{sample}_merged.bam",
         bai="results/aligned_merged/{sample}_merged.bam.bai"
