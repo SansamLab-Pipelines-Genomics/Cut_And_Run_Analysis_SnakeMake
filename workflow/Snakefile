@@ -152,7 +152,8 @@ rule align_reads_with_bowtie2:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
     output:
         bam="results/aligned/{sample}.bam",
-        bai="results/aligned/{sample}.bam.bai"
+        bai="results/aligned/{sample}.bam.bai",
+        touch("results/aligned/align_reads_with_bowtie2.done")
         #bam="results/aligned/{sample,.*(?<!_merged)$}.bam",
         #bai="results/aligned/{sample,.*(?<!_merged)$}.bam.bai"
     conda:
@@ -179,19 +180,20 @@ rule align_reads_with_bowtie2:
 # merge replicates
 rule merge_replicates:
     input:
-        unpack(bams_to_merge),
+        "results/aligned/align_reads_with_bowtie2.done",
         #unpack(sample_indiv_dict_from_sampleMerged),
     output:
         bam="results/aligned_merged/{sample}_merged.bam",
         bai="results/aligned_merged/{sample}_merged.bam.bai"
     params:
-        bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
+        bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
+        inputs=unpack(bams_to_merge),
     conda:
         "envs/samtools.yml"
     log: "results/logs/snakelogs/merge_replicates.{sample}.log"
     shell:
         """
-        samtools merge -o {output.bam} --threads {params.bowtie2_samtools_threads} {input}
+        samtools merge -o {output.bam} --threads {params.bowtie2_samtools_threads} {params.inputs}
         # Index BAM file
         samtools index {output.bam}
         """
