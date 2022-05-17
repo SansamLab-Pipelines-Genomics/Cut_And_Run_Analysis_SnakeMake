@@ -49,15 +49,17 @@ def sample_indiv_dict_from_sampleMerged(wildcards):
     "bams_to_merge": samples_to_merge().loc[wildcards.merged_name, "join"]
   }
 
-def bams_to_merge(smple):
+def bams_to_merge(table=samples_table):
   samples_table.loc[:,'sample'] = 'results/aligned/' + samples_table.loc[:,'sample'].astype(str) + '.bam'
-  df = samples_table[samples_table["merged_sample"] == smple]
-  return df['sample'].agg([' '.join]).tolist()
+  df = samples_table[~samples_table['merged_sample'].isna()]
+  return df
 
 def keywords_to_merge(table=samples_table):
   samples_table3 = table[~table['merged_sample'].isna()]
   samples_table4 = samples_table3.drop_duplicates(subset="merged_sample",keep='first')
-  return samples_table4['merged_sample'].tolist()
+  lst1 = samples_table4['merged_sample'].tolist()
+  lst2 = [x for x in lst1 if x != 'nan']
+  return lst2
 
 def get_bams_to_merge(smpl):
   merged_list=samples_table['merged_sample'].tolist()
@@ -67,6 +69,12 @@ def get_bams_to_merge(smpl):
   samples_list3 = ['results/aligned/' + s + '.bam' for s in samples_list2]
   samples_string = ' '.join([str(item) for item in samples_list3])
   return samples_string
+
+bams_to_merge_dict = {}
+for m in keywords_to_merge():
+  bams_to_merge_dict[m] = get_bams_to_merge(m)
+  
+
 
 
 ##################################################################
@@ -195,7 +203,7 @@ rule merge_replicates:
         bai="results/aligned/{sample}_merged.bam.bai"
     params:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
-        inputs=get_bams_to_merge("{sample}"),
+        inputs=bams_to_merge_dict["{sample}"],
     conda:
         "envs/samtools.yml"
     log: "results/logs/snakelogs/merge_replicates.{sample}.log"
