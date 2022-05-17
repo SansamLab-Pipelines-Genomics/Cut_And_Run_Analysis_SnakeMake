@@ -59,6 +59,7 @@ def keywords_to_merge(table=samples_table):
   samples_table4 = samples_table3.drop_duplicates(subset="merged_sample",keep='first')
   lst1 = samples_table4['merged_sample'].tolist()
   lst2 = [x for x in lst1 if x != 'nan']
+  lst3 = [s + '_merged' for s in lst2]
   return lst2
 
 def get_bams_to_merge(smpl):
@@ -200,8 +201,8 @@ rule merge_replicates:
     input:
         expand("results/aligned/align_reads_with_bowtie2_{sample}.done", sample = samples_table.index),
     output:
-        bam="results/aligned/{sample}_merged.bam",
-        bai="results/aligned/{sample}_merged.bam.bai"
+        bam="results/aligned/{sample}.bam",
+        bai="results/aligned/{sample}.bam.bai"
     params:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
         inputs=lambda wildcards: bams_to_merge_dict[wildcards.sample]
