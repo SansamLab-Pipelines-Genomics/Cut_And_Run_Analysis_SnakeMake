@@ -87,7 +87,7 @@ rule all:
         expand("results/aligned/{sample}_merged.bam", sample = keywords_to_merge()),
         expand("results/aligned/{sample}.bam", sample = samples_table.index),
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
-        expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = samples_table2.index),
+        expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = treatments_table.index),
         expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = treatments_table.index),
         expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = treatments_table.index),
         expand("results/bigwigs_no_spikein/{sample}.bw", sample = samples_table.index),
