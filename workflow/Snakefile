@@ -173,6 +173,7 @@ rule align_reads_with_bowtie2:
         completion_marker=touch("results/aligned/align_reads_with_bowtie2_{sample}.done"),
         #bam="results/aligned/{sample,.*(?<!_merged)$}.bam",
         #bai="results/aligned/{sample,.*(?<!_merged)$}.bam.bai"
+    wildcard_constraints: sample='((?!_merged).)*'
     conda:
         "envs/align_reads_with_bowtie2.yml"
     log: "results/logs/snakelogs/align_reads_with_bowtie2.{sample}.log"
