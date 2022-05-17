@@ -67,7 +67,7 @@ def keywords_to_merge(table=samples_table):
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here  
 rule all:
     input:
-        expand("results/aligned_merged/{sample}_merged.bam", sample = keywords_to_merge()),
+        expand("results/aligned/{sample}_merged.bam", sample = keywords_to_merge()),
         expand("results/aligned/{sample}.bam", sample = samples_table.index),
         #expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
         #expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = samples_table2.index),
@@ -151,11 +151,11 @@ rule align_reads_with_bowtie2:
         bowtie2_threads=config["bowtie2_threads"],
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"]
     output:
-        bam="results/aligned/{sample}.bam",
-        bai="results/aligned/{sample}.bam.bai",
-        completion_marker=touch("results/aligned/align_reads_with_bowtie2_{sample}.done")
-        #bam="results/aligned/{sample,.*(?<!_merged)$}.bam",
-        #bai="results/aligned/{sample,.*(?<!_merged)$}.bam.bai"
+        #bam="results/aligned/{sample}.bam",
+        #bai="results/aligned/{sample}.bam.bai",
+        completion_marker=touch("results/aligned/align_reads_with_bowtie2_{sample}.done"),
+        bam="results/aligned/{sample,.*(?<!_merged)$}.bam",
+        bai="results/aligned/{sample,.*(?<!_merged)$}.bam.bai"
     conda:
         "envs/align_reads_with_bowtie2.yml"
     log: "results/logs/snakelogs/align_reads_with_bowtie2.{sample}.log"
@@ -182,11 +182,11 @@ rule merge_replicates:
     input:
         expand("results/aligned/align_reads_with_bowtie2_{sample}.done", sample = samples_table.index),
     output:
-        bam="results/aligned_merged/{sample}_merged.bam",
-        bai="results/aligned_merged/{sample}_merged.bam.bai"
+        bam="results/aligned/{sample}_merged.bam",
+        bai="results/aligned/{sample}_merged.bam.bai"
     params:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
-        inputs=unpack(bams_to_merge),
+        bams_to_merge({sample}),
     conda:
         "envs/samtools.yml"
     log: "results/logs/snakelogs/merge_replicates.{sample}.log"
