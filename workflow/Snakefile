@@ -53,29 +53,6 @@ def sample_type_dict_from_sample(wildcards):
     "control": 'results/aligned_speciesOfInterest/' + treatments_table.loc[wildcards.sample, "Control"] + '.bam'
   }
 
-
-# this makes a sample table with samples to merge
-def samples_to_merge(table=samples_table):
-  samples_table3 = table[~table['merged_sample'].isna()]
-  samples_table4 = samples_table3.loc[:,('sample','merged_sample')]
-  samples_table4.loc[:,'sample'] = 'results/aligned/' + samples_table4.loc[:,'sample'].astype(str) + '.bam'
-  grouped_by_merged = samples_table4.groupby(samples_table4.loc[:,'merged_sample'])
-  samples_table5 = grouped_by_merged["sample"].agg([' '.join])
-  samples_table5.loc[:,"merged_name"] = samples_table5.index
-  samples_table6 = samples_table5.drop_duplicates(subset="merged_name",keep='first')
-  return samples_table6
-
-# this makes an input function that returns a dictionary with merged filenames and bams to merge
-def sample_indiv_dict_from_sampleMerged(wildcards):
-  return {
-    "bams_to_merge": samples_to_merge().loc[wildcards.merged_name, "join"]
-  }
-
-def bams_to_merge(table=samples_table):
-  samples_table.loc[:,'sample'] = 'results/aligned/' + samples_table.loc[:,'sample'].astype(str) + '.bam'
-  df = samples_table[~samples_table['merged_sample'].isna()]
-  return df
-
 def keywords_to_merge(table=samples_table):
   samples_table3 = table[~table['merged_sample'].isna()]
   samples_table4 = samples_table3.drop_duplicates(subset="merged_sample",keep='first')
@@ -99,8 +76,6 @@ bams_to_merge_dict = {}
 for m in merged_keywords_lst:
   bams_to_merge_dict[m] = get_bams_to_merge(m)
   
-
-
 
 ##################################################################
 ##                           rules                              ##
@@ -411,3 +386,4 @@ rule make_bigwigs_with_spikein:
       scale_factor=$(grep scale {input.scale} | sed 's/scale factor = //g')
       bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
       """
+     
