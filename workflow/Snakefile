@@ -22,8 +22,29 @@ def fq_dict_from_sample(wildcards):
     "fq2": samples_table.loc[wildcards.sample, "fastq2"]
   }
 
+# this makes a sample table with "_merged" appended to the end of each merged sample name in the "merged_sample" and "Control" columns
+def add_merge_suffix_to_merged_samples(samples_df):
+  df=samples_df
+  merged_list=df['merged_sample'].to_list()
+  def unique(list1):
+    list_set = set(list1)
+    unique_list = (list(list_set))
+    return unique_list
+  unique_merged_list=unique(merged_list)
+  unique_merged_list_no_nan=[x for x in unique_merged_list if x != 'nan']
+  Control_list=df['Control'].to_list()
+  for mrged in unique_merged_list_no_nan:
+    Control_list = [re.sub(r"\b{}\b".format(mrged), mrged + "_merged", s) for s in Control_list]
+    merged_list = [re.sub(r"\b{}\b".format(mrged), mrged + "_merged", s) for s in merged_list]
+  df2 = df
+  df2['Control'] = Control_list
+  df2['merged_sample'] = merged_list
+  return df2
+
+samples_table_w_merged_suffix = add_merge_suffix_to_merged_samples(samples_table)
+
 # this makes a new sample table with only the 'treatment' sample rows
-treatments_table = samples_table.loc[samples_table['sampleType'] == 'treatment']
+treatments_table = samples_table_w_merged_suffix.loc[samples_table_w_merged_suffix['sampleType'] == 'treatment']
 
 # sample_type input function definition set to Python dictionary
 def sample_type_dict_from_sample(wildcards):
@@ -31,6 +52,7 @@ def sample_type_dict_from_sample(wildcards):
     "treatment": 'results/aligned_speciesOfInterest/' + treatments_table.loc[wildcards.sample, "sample"] + '.bam',
     "control": 'results/aligned_speciesOfInterest/' + treatments_table.loc[wildcards.sample, "Control"] + '.bam'
   }
+
 
 # this makes a sample table with samples to merge
 def samples_to_merge(table=samples_table):
