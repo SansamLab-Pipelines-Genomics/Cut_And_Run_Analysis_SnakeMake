@@ -78,8 +78,7 @@ bams_to_merge_dict = {}
 for m in merged_keywords_lst:
   bams_to_merge_dict[m] = get_bams_to_merge(m)
 
-samples_lst = samples_table['sample'].to_list
-all_samples_lst = merged_keywords_lst + samples_lst
+all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
 
 ##################################################################
 ##                           rules                              ##
