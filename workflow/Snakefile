@@ -178,7 +178,6 @@ rule align_reads_with_bowtie2:
     conda:
         "envs/align_reads_with_bowtie2.yml"
     log: "results/logs/snakelogs/align_reads_with_bowtie2.{sample}.log"
-    ruleorder: align_reads_with_bowtie2 > merge_replicates
     shell:
         """
         bowtie2 \
@@ -208,6 +207,7 @@ rule merge_replicates:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
         inputs=lambda wildcards: bams_to_merge_dict[wildcards.sample]
         #inputs=bams_to_merge_dict["{sample}"],
+    wildcard_constraints: sample='((?_merged).)*'
     conda:
         "envs/samtools.yml"
     log: "results/logs/snakelogs/merge_replicates.{sample}.log"
@@ -231,7 +231,6 @@ rule get_species_of_interest_reads:
     conda:
         "envs/samtools.yml"
     log: "results/logs/snakelogs/get_species_of_interest_reads.{sample}.log"
-    ruleorder: align_reads_with_bowtie2 > merge_replicates
     shell:
         """
         awk -F '\t' '{{ print $1,"1",$2 }}' OFS='\t' {params.chromosomeSizes} > {output.bam}tmp.bed
