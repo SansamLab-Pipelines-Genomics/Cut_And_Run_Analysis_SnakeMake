@@ -43,6 +43,8 @@ def add_merge_suffix_to_merged_samples(samples_df):
 
 samples_table_w_merged_suffix = add_merge_suffix_to_merged_samples(samples_table)
 
+print(samples_table_w_merged_suffix)
+
 # this makes a new sample table with only the 'treatment' sample rows
 treatments_table = samples_table_w_merged_suffix.loc[samples_table_w_merged_suffix['sampleType'] == 'treatment']
 
