@@ -59,15 +59,15 @@ def sample_type_dict_from_sample(wildcards):
 def keywords_to_merge(table=samples_table_w_merged_suffix):
   samples_table3 = table[~table['merged_sample'].isna()]
   samples_table4 = samples_table3.drop_duplicates(subset="merged_sample",keep='first')
-  lst1 = samples_table4['merged_sample'].tolist()
+  lst1 = samples_table4['merged_sample'].to_list()
   lst2 = [x for x in lst1 if x != 'nan']
   return lst2
 
 merged_keywords_lst = keywords_to_merge()
 
 def get_bams_to_merge(smpl):
-  merged_list=samples_table_w_merged_suffix['merged_sample'].tolist()
-  samples_list=samples_table_w_merged_suffix['sample'].tolist()
+  merged_list=samples_table_w_merged_suffix['merged_sample'].to_list()
+  samples_list=samples_table_w_merged_suffix['sample'].to_list()
   indices=[i for i,x in enumerate(merged_list) if x==smpl]
   samples_list2 = [samples_list[i] for i in indices]
   samples_list3 = ['results/aligned/' + s + '.bam' for s in samples_list2]
@@ -77,7 +77,8 @@ def get_bams_to_merge(smpl):
 bams_to_merge_dict = {}
 for m in merged_keywords_lst:
   bams_to_merge_dict[m] = get_bams_to_merge(m)
-  
+
+all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list
 
 ##################################################################
 ##                           rules                              ##
@@ -92,7 +93,7 @@ rule all:
         #expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = treatments_table.index),
         #expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = treatments_table.index),
         #expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = treatments_table.index),
-        expand("results/bigwigs_no_spikein/{sample}.bw", sample = samples_table.index + merged_keywords_lst),
+        expand("results/bigwigs_no_spikein/{sample}.bw", sample = all_samples_lst),
         #expand("results/bigwigs_spikein/{sample}.bw", sample = samples_table.index)
 
 # run fastqc on fastq.gz files before trimming
