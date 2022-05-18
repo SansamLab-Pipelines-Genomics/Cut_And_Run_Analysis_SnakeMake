@@ -44,14 +44,11 @@ def add_merge_suffix_to_merged_samples(samples_df):
 
 samples_table_w_merged_suffix = add_merge_suffix_to_merged_samples(samples_table)
 
-# this makes a new sample table with only the 'treatment' sample rows
-treatments_table = samples_table_w_merged_suffix.loc[samples_table_w_merged_suffix['sampleType'] == 'treatment']
-
 # sample_type input function definition set to Python dictionary
 def sample_type_dict_from_sample(wildcards):
   return {
-    "treatment": 'results/aligned_speciesOfInterest/' + treatments_table.loc[wildcards.sample, "sample"] + '.bam',
-    "control": 'results/aligned_speciesOfInterest/' + treatments_table.loc[wildcards.sample, "Control"] + '.bam'
+    "treatment": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "sample"] + '.bam',
+    "control": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "Control"] + '.bam'
   }
 
 def keywords_to_merge(table=samples_table_w_merged_suffix):
@@ -80,8 +77,15 @@ all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
 
 # this makes a new sample table with only the 'treatment' sample rows
 treatments_table = samples_table_w_merged_suffix.loc[samples_table_w_merged_suffix['sampleType'] == 'treatment']
-treatment_merged_keywords_lst = keywords_to_merge(treatments_table)
-treatment_samples_lst = merged_keywords_lst + treatments_table['sample'].to_list()
+# this makes a treatments table with the merged samples in the "samples" column
+merged_treatments_table = treatments_table.copy()
+merged_treatments_table.loc[:,'sample'] = merged_treatments_table['merged_sample'].to_list()
+merged_treatments_table = merged_treatments_table.set_index('merged_sample')
+all_treatments_table = pd.concat([treatments_table, merged_treatments_table])
+dup_series=all_treatments_table.duplicated(subset='sample',keep='first')
+all_treatments_table = all_treatments_table[~dup_series]
+all_treatments_table = all_treatments_table[all_treatments_table["sample"].str.contains("nan")==False]
+treatment_samples_lst = all_treatments_table['sample'].to_list()
 
 
 ##################################################################
