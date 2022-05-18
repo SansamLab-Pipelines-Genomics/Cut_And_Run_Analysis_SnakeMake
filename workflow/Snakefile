@@ -106,6 +106,7 @@ rule fastqc_reads:
     conda:
         "envs/CutAndRun_Conda_Environment.yml"
     log: "results/logs/snakelogs/fastqc_reads.{sample}.log"
+    wildcard_constraints: sample='((?!_merged).)*'
     shell:
         """
         fastqc {input.fq1}
@@ -136,6 +137,7 @@ rule trim_reads_with_trimmomatic:
     conda:
         "envs/trim_reads_with_trimmomatic.yml"
     log: "results/logs/snakelogs/trim_reads_with_trimmomatic.{sample}.log"
+    wildcard_constraints: sample='((?!_merged).)*'
     shell:
         """
         trimmomatic PE -threads {params.trimmomatic_threads} {input.fq1} {input.fq2} {output.trimmed1} {output.orphaned1} {output.trimmed2} {output.orphaned2} ILLUMINACLIP:{params.trimmomatic_adapterfile}:2:15:4:4:true LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:25
@@ -154,6 +156,7 @@ rule trim_reads_with_cutadapt:
     conda:
         "envs/trim_reads_with_cutadapt.yml"
     log: "results/logs/snakelogs/trim_reads_with_cutadapt.{sample}.log"
+    wildcard_constraints: sample='((?!_merged).)*'
     shell:
         """
         cutadapt --cores=0 -a file:{params.cutadapt_adapterfile} -A file:{params.cutadapt_adapterfile} -a G{{100}} -A G{{100}} --minimum-length 25 --quality-cutoff 20,20 -e 0.2 --output {output.trimmed1} --paired-output {output.trimmed2} {input.R1} {input.R2}
