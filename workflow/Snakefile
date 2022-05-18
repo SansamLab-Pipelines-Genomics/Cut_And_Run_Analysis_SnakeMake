@@ -86,7 +86,7 @@ for m in merged_keywords_lst:
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here  
 rule all:
     input:
-        expand("results/aligned/{sample}_merged.bam", sample = merged_keywords_lst),
+        expand("results/aligned/{sample}.bam", sample = merged_keywords_lst),
         expand("results/aligned/{sample}.bam", sample = samples_table.index),
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
         expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = treatments_table.index),
