@@ -95,7 +95,7 @@ rule all:
         #expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = treatments_table.index),
         expand("results/bigwigs_no_spikein/{sample}.bw", sample = all_samples_lst),
         #expand("results/aligned_speciesOfInterest/{sample}.bam", sample = all_samples_lst),
-        #expand("results/bigwigs_spikein/{sample}.bw", sample = samples_table.index)
+        expand("results/bigwigs_spikein/{sample}.bw", sample = all_samples_lst)
 
 # run fastqc on fastq.gz files before trimming
 rule fastqc_reads:
