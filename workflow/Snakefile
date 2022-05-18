@@ -93,7 +93,8 @@ rule all:
         #expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = treatments_table.index),
         #expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = treatments_table.index),
         #expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = treatments_table.index),
-        expand("results/bigwigs_no_spikein/{sample}.bw", sample = all_samples_lst),
+        #expand("results/bigwigs_no_spikein/{sample}.bw", sample = all_samples_lst),
+        expand("results/aligned_speciesOfInterest/{sample}.bam", sample = all_samples_lst),
         #expand("results/bigwigs_spikein/{sample}.bw", sample = samples_table.index)
 
 # run fastqc on fastq.gz files before trimming
