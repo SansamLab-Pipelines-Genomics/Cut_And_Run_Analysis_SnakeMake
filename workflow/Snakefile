@@ -62,6 +62,8 @@ def keywords_to_merge(table=samples_table):
   lst3 = [s + '_merged' for s in lst2]
   return lst3
 
+merged_keywords_lst = keywords_to_merge()
+
 def get_bams_to_merge(smpl):
   merged_list=samples_table['merged_sample'].tolist()
   samples_list=samples_table['sample'].tolist()
@@ -72,7 +74,7 @@ def get_bams_to_merge(smpl):
   return samples_string
 
 bams_to_merge_dict = {}
-for m in keywords_to_merge():
+for m in merged_keywords_lst:
   bams_to_merge_dict[m] = get_bams_to_merge(m)
   
 
@@ -85,7 +87,7 @@ for m in keywords_to_merge():
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here  
 rule all:
     input:
-        expand("results/aligned/{sample}_merged.bam", sample = keywords_to_merge()),
+        expand("results/aligned/{sample}_merged.bam", sample = merged_keywords_lst),
         expand("results/aligned/{sample}.bam", sample = samples_table.index),
         expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
         expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = treatments_table.index),
