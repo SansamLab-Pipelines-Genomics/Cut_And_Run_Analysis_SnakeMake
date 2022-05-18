@@ -207,7 +207,7 @@ rule merge_replicates:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
         inputs=lambda wildcards: bams_to_merge_dict[wildcards.sample]
         #inputs=bams_to_merge_dict["{sample}"],
-    wildcard_constraints: sample='((?_merged).)*'
+    wildcard_constraints: sample='.*_merged.*'
     conda:
         "envs/samtools.yml"
     log: "results/logs/snakelogs/merge_replicates.{sample}.log"
