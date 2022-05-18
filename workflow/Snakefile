@@ -10,6 +10,7 @@ configfile: "config/config.yml"
 
 # this imports the pandas package functionality in an object named pd
 import pandas as pd
+import re
 
 # this reads the CSV file and sets an index using the values in the "sample" column.
 samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False)
