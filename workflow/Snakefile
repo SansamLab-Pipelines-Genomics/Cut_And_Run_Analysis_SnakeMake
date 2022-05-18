@@ -13,7 +13,7 @@ import pandas as pd
 import re
 
 # this reads the CSV file and sets an index using the values in the "sample" column.
-samples_table = pd.read_csv(config["samples.csv"]).set_index("sample", drop=False)
+samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False)
 samples_table = samples_table.applymap(str)
 
 # fastq filename input function definition set to Python dictionary
