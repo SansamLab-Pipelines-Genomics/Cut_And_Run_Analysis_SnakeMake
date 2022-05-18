@@ -44,8 +44,6 @@ def add_merge_suffix_to_merged_samples(samples_df):
 
 samples_table_w_merged_suffix = add_merge_suffix_to_merged_samples(samples_table)
 
-print(samples_table_w_merged_suffix)
-
 # this makes a new sample table with only the 'treatment' sample rows
 treatments_table = samples_table_w_merged_suffix.loc[samples_table_w_merged_suffix['sampleType'] == 'treatment']
 
@@ -80,6 +78,12 @@ for m in merged_keywords_lst:
 
 all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
 
+# this makes a new sample table with only the 'treatment' sample rows
+treatments_table = samples_table_w_merged_suffix.loc[samples_table_w_merged_suffix['sampleType'] == 'treatment']
+treatment_merged_keywords_lst = keywords_to_merge(treatments_table)
+treatment_samples_lst = merged_keywords_lst + treatments_table['sample'].to_list()
+
+
 ##################################################################
 ##                           rules                              ##
 ##################################################################
@@ -90,9 +94,9 @@ rule all:
         #expand("results/aligned/{sample}.bam", sample = merged_keywords_lst),
         #expand("results/aligned/{sample}.bam", sample = samples_table.index),
         #expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
-        expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = all_samples_lst),
-        expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = all_samples_lst),
-        expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = all_samples_lst),
+        expand("results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed", sample = treatment_samples_lst),
+        expand("results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak", sample = treatment_samples_lst),
+        expand("results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak", sample = treatment_samples_lst),
         expand("results/bigwigs_no_spikein/{sample}.bw", sample = all_samples_lst),
         #expand("results/aligned_speciesOfInterest/{sample}.bam", sample = all_samples_lst),
         expand("results/bigwigs_spikein/{sample}.bw", sample = all_samples_lst)
