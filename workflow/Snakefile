@@ -87,6 +87,9 @@ all_treatments_table = all_treatments_table[~dup_series]
 all_treatments_table = all_treatments_table[all_treatments_table["sample"].str.contains("nan")==False]
 treatment_samples_lst = all_treatments_table['sample'].to_list()
 
+# get sample names for those to be merged
+samples_to_merge = samples_table_w_merged_suffix[samples_table_w_merged_suffix["merged_sample"].str.contains("nan")==False]
+samples_to_merge_lst = samples_to_merge['sample'].to_list()
 
 ##################################################################
 ##                           rules                              ##
@@ -213,7 +216,7 @@ rule align_reads_with_bowtie2:
 # merge replicates
 rule merge_replicates:
     input:
-        expand("results/aligned/{sample}.bam", sample = samples_table.index),
+        expand("results/aligned/{sample}.bam", sample = samples_to_merge_lst),
         #expand("results/aligned/align_reads_with_bowtie2_{sample}.done", sample = samples_table.index),
     output:
         bam="results/aligned/{sample}.bam",
