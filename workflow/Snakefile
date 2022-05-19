@@ -19,11 +19,11 @@ samples_table = samples_table.applymap(str)
 # set variables
 samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_table)
 merged_keywords_lst = cf.keywords_to_merge(samples_table_w_merged_suffix)
-all_samples_lst = cf.merged_keywords_lst + samples_table['sample'].to_list()
+all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
 samples_to_merge_lst = cf.make_samples_to_merge_list(samples_table_w_merged_suffix)
 bams_to_merge_dict = cf.make_bams_to_merge_dict(merged_keywords_lst)
 all_treatments_table = cf.make_all_treatments_table(samples_table_w_merged_suffix)
-treatment_samples_lst = cf.all_treatments_table['sample'].to_list()
+treatment_samples_lst = all_treatments_table['sample'].to_list()
 fq_dict_from_sample = cf.fq_dict_from_sample
 sample_type_dict_from_sample = cf.fq_dict_from_sample
 
