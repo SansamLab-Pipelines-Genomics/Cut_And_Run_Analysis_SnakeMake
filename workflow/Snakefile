@@ -82,11 +82,11 @@ rule fastqc_reads:
         mv ${{dir}}/${{bsename}}_fastqc.html {output.html2}
         mv ${{dir}}/${{bsename}}_fastqc.zip {output.zip2}
         """
-
+        
 # trim reads with trimmomatic
 rule trim_reads_with_trimmomatic:
     input:
-        unpack(fq_dict_from_sample)   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        unpack(lambda wildcards: return {"fq1": samples_table.loc[wildcards.sample, "fastq1"], "fq2": samples_table.loc[wildcards.sample, "fastq2"]})   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
         trimmed1="results/trimmed/{sample}_trimmomatic_R1.fastq.gz",
         trimmed2="results/trimmed/{sample}_trimmomatic_R2.fastq.gz",
