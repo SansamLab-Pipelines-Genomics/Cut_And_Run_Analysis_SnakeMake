@@ -213,7 +213,8 @@ rule align_reads_with_bowtie2:
 # merge replicates
 rule merge_replicates:
     input:
-        expand("results/aligned/align_reads_with_bowtie2_{sample}.done", sample = samples_table.index),
+        expand("results/aligned/{sample}.bam", sample = samples_table.index),
+        #expand("results/aligned/align_reads_with_bowtie2_{sample}.done", sample = samples_table.index),
     output:
         bam="results/aligned/{sample}.bam",
         bai="results/aligned/{sample}.bam.bai"
