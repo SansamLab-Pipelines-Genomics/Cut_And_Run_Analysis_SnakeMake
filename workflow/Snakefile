@@ -97,9 +97,9 @@ def make_treatment_samples_lst(tbl):
   return ts_lst
 
 # set variables
-all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
 samples_table_w_merged_suffix = add_merge_suffix_to_merged_samples(samples_table)
 merged_keywords_lst = keywords_to_merge(samples_table_w_merged_suffix)
+all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
 samples_to_merge_lst = make_samples_to_merge_list(samples_table_w_merged_suffix)
 bams_to_merge_dict = make_bams_to_merge_dict(merged_keywords_lst)
 treatment_samples_lst = make_treatment_samples_lst(samples_table_w_merged_suffix)
