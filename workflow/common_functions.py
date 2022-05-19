@@ -5,13 +5,6 @@
 import pandas as pd
 import re
 
-# fastq filename input function definition set to Python dictionary
-def fq_dict_from_sample(wildcards,tbl):
-  return {
-    "fq1": tbl.loc[wildcards.sample, "fastq1"],
-    "fq2": tbl.loc[wildcards.sample, "fastq2"]
-  }
-
 # this makes a sample table with "_merged" appended to the end of each merged sample name in the "merged_sample" and "Control" columns
 def add_merge_suffix_to_merged_samples(samples_df):
   df=samples_df
