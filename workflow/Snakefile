@@ -8,22 +8,25 @@ configfile: "config/config.yml"
 #  https://eriqande.github.io/eca-bioinf-handbook/managing-workflows-with-snakemake.html
 #  https://www.biostars.org/p/335903/
 
-# this imports the pandas package functionality in an object named pd
 import pandas as pd
 import re
+import common_functions as cf
 
 # this reads the CSV file and sets an index using the values in the "sample" column.
 samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False)
 samples_table = samples_table.applymap(str)
 
 # set variables
-samples_table_w_merged_suffix = add_merge_suffix_to_merged_samples(samples_table)
-merged_keywords_lst = keywords_to_merge(samples_table_w_merged_suffix)
-all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
-samples_to_merge_lst = make_samples_to_merge_list(samples_table_w_merged_suffix)
-bams_to_merge_dict = make_bams_to_merge_dict(merged_keywords_lst)
-all_treatments_table = make_all_treatments_table(samples_table_w_merged_suffix)
-treatment_samples_lst = all_treatments_table['sample'].to_list()
+samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_table)
+merged_keywords_lst = cf.keywords_to_merge(samples_table_w_merged_suffix)
+all_samples_lst = cf.merged_keywords_lst + samples_table['sample'].to_list()
+samples_to_merge_lst = cf.make_samples_to_merge_list(samples_table_w_merged_suffix)
+bams_to_merge_dict = cf.make_bams_to_merge_dict(merged_keywords_lst)
+all_treatments_table = cf.make_all_treatments_table(samples_table_w_merged_suffix)
+treatment_samples_lst = cf.all_treatments_table['sample'].to_list()
+fq_dict_from_sample = cf.fq_dict_from_sample
+sample_type_dict_from_sample = cf.fq_dict_from_sample
+
 
 ##################################################################
 ##                           rules                              ##
