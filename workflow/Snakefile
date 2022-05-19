@@ -24,7 +24,6 @@ samples_to_merge_lst = cf.make_samples_to_merge_list(samples_table_w_merged_suff
 bams_to_merge_dict = cf.make_bams_to_merge_dict(merged_keywords_lst,samples_table_w_merged_suffix)
 all_treatments_table = cf.make_all_treatments_table(samples_table_w_merged_suffix)
 treatment_samples_lst = all_treatments_table['sample'].to_list()
-sample_type_dict_from_sample = cf.sample_type_dict_from_sample
 
 # fastq filename input function definition set to Python dictionary
 def fq_dict_from_sample(wildcards):
