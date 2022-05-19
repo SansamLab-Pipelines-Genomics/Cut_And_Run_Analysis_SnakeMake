@@ -52,7 +52,7 @@ def make_bams_to_merge_dict(lst,tbl):
     btm_dict[m] = get_bams_to_merge(m,tbl)
   return btm_dict
 
-def make_all_treatments_list(tbl):
+def make_all_treatments_table(tbl):
   # this makes a new sample table with only the 'treatment' sample rows
   treatments_table = tbl.loc[tbl['sampleType'] == 'treatment']
   # this makes a treatments table with the merged samples in the "samples" column
@@ -64,4 +64,4 @@ def make_all_treatments_list(tbl):
   at_table = at_table[~dup_series]
   at_table = at_table[at_table["sample"].str.contains("nan")==False]
   ### treatment_samples_lst
-  return at_table['sample'].to_list()
+  return at_table
