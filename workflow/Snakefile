@@ -32,6 +32,12 @@ def fq_dict_from_sample(wildcards):
     "fq1": samples_table.loc[wildcards.sample, "fastq1"],
     "fq2": samples_table.loc[wildcards.sample, "fastq2"]
   }
+# sample_type input function definition set to Python dictionary
+def sample_type_dict_from_sample(wildcards):
+  return {
+    "treatment": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "sample"] + '.bam',
+    "control": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "Control"] + '.bam'
+  }
 
 ##################################################################
 ##                           rules                              ##
