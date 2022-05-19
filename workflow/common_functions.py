@@ -24,13 +24,6 @@ def add_merge_suffix_to_merged_samples(samples_df):
   df2['merged_sample'] = merged_list
   return df2
 
-# sample_type input function definition set to Python dictionary
-def sample_type_dict_from_sample(wildcards):
-  return {
-    "treatment": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "sample"] + '.bam',
-    "control": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "Control"] + '.bam'
-  }
-
 def keywords_to_merge(table):
   samples_table3 = table[~table['merged_sample'].isna()]
   samples_table4 = samples_table3.drop_duplicates(subset="merged_sample",keep='first')
