@@ -251,7 +251,7 @@ rule calculate_spikein_scale_factors:
     input:
       bam="results/aligned/{sample}.bam"
     output:
-      "results/scale_factors/{sample}_scaleFactor.txt"
+      report("results/scale_factors/{sample}_scaleFactor.txt")
     params:
       px=config["spike_in_chrom_prefix"]
     conda:
