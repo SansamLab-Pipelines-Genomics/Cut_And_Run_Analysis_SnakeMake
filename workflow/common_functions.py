@@ -2,6 +2,9 @@
 ##                          functions                           ##
 ##################################################################
 
+import pandas as pd
+import re
+
 # fastq filename input function definition set to Python dictionary
 def fq_dict_from_sample(wildcards):
   return {
