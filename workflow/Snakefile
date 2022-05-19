@@ -262,7 +262,7 @@ rule calculate_spikein_scale_factors:
       spike_in_counts=$(samtools idxstats {input.bam} | grep {params.px} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
       spike_in_percentage=$(echo "scale=3; $spike_in_counts/$total_counts*100" | bc )
       scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
-      echo "bam file:  {input.bam} > {output}_tmp
+      echo "bam file:  {input.bam}" > {output}_tmp
       echo "total counts = ${{total_counts}}" >> {output}_tmp
       echo "spike in read counts = ${{spike_in_counts}}" >> {output}_tmp
       echo "spike in percentage = ${{spike_in_percentage}}" >> {output}_tmp
