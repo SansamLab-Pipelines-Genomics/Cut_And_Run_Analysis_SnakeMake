@@ -45,9 +45,9 @@ def keywords_to_merge(table):
   lst2 = [x for x in lst1 if x != 'nan']
   return lst2
 
-def get_bams_to_merge(smpl):
-  merged_list=samples_table_w_merged_suffix['merged_sample'].to_list()
-  samples_list=samples_table_w_merged_suffix['sample'].to_list()
+def get_bams_to_merge(smpl,tbl):
+  merged_list=tbl['merged_sample'].to_list()
+  samples_list=tbl['sample'].to_list()
   indices=[i for i,x in enumerate(merged_list) if x==smpl]
   samples_list2 = [samples_list[i] for i in indices]
   samples_list3 = ['results/aligned/' + s + '.bam' for s in samples_list2]
