@@ -19,7 +19,7 @@ samples_table = samples_table.applymap(str)
 # set variables
 samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_table)
 merged_keywords_lst = cf.keywords_to_merge(samples_table_w_merged_suffix)
-all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
+#all_samples_lst = merged_keywords_lst + samples_table['sample'].to_list()
 samples_to_merge_lst = cf.make_samples_to_merge_list(samples_table_w_merged_suffix)
 bams_to_merge_dict = cf.make_bams_to_merge_dict(merged_keywords_lst,samples_table_w_merged_suffix)
 all_treatments_table = cf.make_all_treatments_table(samples_table_w_merged_suffix)
@@ -38,9 +38,9 @@ rule all:
         expand(f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed", sample = treatment_samples_lst),
         expand(f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak", sample = treatment_samples_lst),
         expand(f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak", sample = treatment_samples_lst),
-        expand("results/bigwigs_no_spikein/{sample}.bw", sample = all_samples_lst),
-        #expand("results/aligned_speciesOfInterest/{sample}.bam", sample = all_samples_lst),
-        expand("results/bigwigs_spikein/{sample}.bw", sample = all_samples_lst)
+        expand("results/bigwigs_no_spikein/{sample}.bw", sample = merged_keywords_lst + samples_table['sample'].to_list()),
+        #expand("results/aligned_speciesOfInterest/{sample}.bam", sample = merged_keywords_lst + samples_table['sample'].to_list()),
+        expand("results/bigwigs_spikein/{sample}.bw", sample = merged_keywords_lst + samples_table['sample'].to_list())
 
 # run fastqc on fastq.gz files before trimming
 rule fastqc_reads:
