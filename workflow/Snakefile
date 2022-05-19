@@ -25,12 +25,6 @@ bams_to_merge_dict = cf.make_bams_to_merge_dict(merged_keywords_lst,samples_tabl
 all_treatments_table = cf.make_all_treatments_table(samples_table_w_merged_suffix)
 treatment_samples_lst = all_treatments_table['sample'].to_list()
 
-# fastq filename input function definition set to Python dictionary
-def fq_dict_from_sample(wildcards):
-  return {
-    "fq1": samples_table.loc[wildcards.sample, "fastq1"],
-    "fq2": samples_table.loc[wildcards.sample, "fastq2"]
-  }
 # sample_type input function definition set to Python dictionary
 def sample_type_dict_from_sample(wildcards):
   return {
@@ -58,7 +52,7 @@ rule all:
 # run fastqc on fastq.gz files before trimming
 rule fastqc_reads:
     input:
-        unpack(fq_dict_from_sample)   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        unpack(lambda wildcards: {"fq1": samples_table.loc[wildcards.sample, "fastq1"], "fq2": samples_table.loc[wildcards.sample, "fastq2"]})   # <--- we need to wrap our input function inside a special Snakemake function called unpack   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
         html1="results/qc/fastqc/{sample}_R1_fastqc.html",
         zip1="results/qc/fastqc/{sample}_R1_fastqc.zip",
