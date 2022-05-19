@@ -207,7 +207,7 @@ rule call_peaks_with_sicer:
 
 rule call_narrow_peaks_with_macs2:
     input:
-        unpack(lambda wildcards: {"treatment": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "sample"] + '.bam', "control": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "Control"] + '.bam'})   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        unpack(lambda wildcards: {"treatment": f"results/aligned_speciesOfInterest/{all_treatments_table.loc[wildcards.sample, 'sample']}.bam", "control": f"results/aligned_speciesOfInterest/{all_treatments_table.loc[wildcards.sample, 'Control']}.bam"})   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
         "results/macs2_normalPeaks/{sample}_" + str(config['macs2_minimum_FDR_cutoff']) + "_peaks.narrowPeak"
     params:
@@ -226,7 +226,7 @@ rule call_narrow_peaks_with_macs2:
 
 rule call_broad_peaks_with_macs2:
     input:
-        unpack(lambda wildcards: {"treatment": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "sample"] + '.bam', "control": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "Control"] + '.bam'})   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        unpack(lambda wildcards: {"treatment": f"results/aligned_speciesOfInterest/{all_treatments_table.loc[wildcards.sample, 'sample']}.bam", "control": f"results/aligned_speciesOfInterest/{all_treatments_table.loc[wildcards.sample, 'Control']}.bam"})   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
         "results/macs2_broadPeaks/{sample}_" + str(config['macs2_broad_minimum_FDR_cutoff']) + "_peaks.broadPeak"
     params:
