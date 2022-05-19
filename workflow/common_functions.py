@@ -63,7 +63,7 @@ def make_samples_to_merge_list(df):
 def make_bams_to_merge_dict(lst,tbl):
   btm_dict = {}
   for m in lst:
-    btm_dict[m] = get_bams_to_merge(m)
+    btm_dict[m] = get_bams_to_merge(m,tbl)
   return btm_dict
 
 def make_all_treatments_table(tbl):
