@@ -25,7 +25,7 @@ samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_ta
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here  
 rule all:
     input:
-        expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
+        # expand("results/qc/fastqc/{sample}_R1_fastqc.html", sample = samples_table.index),
         expand(f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed", sample = cf.make_all_treatments_table(samples_table_w_merged_suffix)['sample'].to_list()),
         expand(f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak", sample = cf.make_all_treatments_table(samples_table_w_merged_suffix)['sample'].to_list()),
         expand(f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak", sample = cf.make_all_treatments_table(samples_table_w_merged_suffix)['sample'].to_list()),
