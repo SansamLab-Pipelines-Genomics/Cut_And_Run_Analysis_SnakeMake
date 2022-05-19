@@ -60,7 +60,7 @@ def make_samples_to_merge_list(df):
   samples_to_merge_lst = samples_to_merge['sample'].to_list()
   return samples_to_merge_lst
 
-def make_bams_to_merge_dict(lst):
+def make_bams_to_merge_dict(lst,tbl):
   btm_dict = {}
   for m in lst:
     btm_dict[m] = get_bams_to_merge(m)
