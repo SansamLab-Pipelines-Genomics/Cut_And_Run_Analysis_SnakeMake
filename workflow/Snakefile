@@ -185,7 +185,7 @@ rule get_species_of_interest_reads:
 
 rule call_peaks_with_sicer:
     input:
-        unpack(lambda wildcards: {"treatment": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "sample"] + '.bam', "control": 'results/aligned_speciesOfInterest/' + all_treatments_table.loc[wildcards.sample, "Control"] + '.bam'})   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        unpack(lambda wildcards: {"treatment": f"results/aligned_speciesOfInterest/{all_treatments_table.loc[wildcards.sample, 'sample']}.bam", "control": f"results/aligned_speciesOfInterest/{all_treatments_table.loc[wildcards.sample, 'Control']}.bam"})   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
         "results/sicer/{sample}-W" + str(config['sicer_windowSize']) + "-G" + str(config['sicer_gapSize']) + "-FDR" + str(config['sicer_fdr']) + "-island.bed"
     params:
