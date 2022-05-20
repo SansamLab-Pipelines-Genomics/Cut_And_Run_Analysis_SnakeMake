@@ -67,10 +67,10 @@ rule trim_reads_with_trimmomatic:
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
-        trimmed1="results/trimmed/{sample}_trimmomatic_R1.fastq.gz",
-        trimmed2="results/trimmed/{sample}_trimmomatic_R2.fastq.gz",
-        orphaned1="results/trimmed/{sample}_trimmomatic_orphaned_R1.fastq.gz",
-        orphaned2="results/trimmed/{sample}_trimmomatic_orphaned_R2.fastq.gz",
+        temp(trimmed1="results/trimmed/{sample}_trimmomatic_R1.fastq.gz"),
+        temp(trimmed2="results/trimmed/{sample}_trimmomatic_R2.fastq.gz"),
+        temp(orphaned1="results/trimmed/{sample}_trimmomatic_orphaned_R1.fastq.gz"),
+        temp(orphaned2="results/trimmed/{sample}_trimmomatic_orphaned_R2.fastq.gz"),
     params:
         trimmomatic_threads=config["trimmomatic_threads"],
         trimmomatic_adapterfile=config["trimmomatic_adapterfile"],
@@ -92,8 +92,8 @@ rule trim_reads_with_cutadapt:
         R1="results/trimmed/{sample}_trimmomatic_R1.fastq.gz",
         R2="results/trimmed/{sample}_trimmomatic_R2.fastq.gz",
     output:
-        trimmed1="results/trimmed/{sample}_trimmed_R1.fastq.gz",
-        trimmed2="results/trimmed/{sample}_trimmed_R2.fastq.gz",
+        temp(trimmed1="results/trimmed/{sample}_trimmed_R1.fastq.gz"),
+        temp(trimmed2="results/trimmed/{sample}_trimmed_R2.fastq.gz"),
     params:
         cutadapt_adapterfile=config["cutadapt_adapterfile"],
     conda:
