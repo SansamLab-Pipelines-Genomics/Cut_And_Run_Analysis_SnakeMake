@@ -57,7 +57,6 @@ rule all:
         ),
 
         
-# trim reads with trimmomatic
 rule trim_reads_with_trimmomatic:
     input:
         unpack(
@@ -86,7 +85,6 @@ rule trim_reads_with_trimmomatic:
         """
 
 
-# trim reads with cutadapt
 rule trim_reads_with_cutadapt:
     input:
         R1="results/trimmed/{sample}_trimmomatic_R1.fastq.gz",
@@ -108,7 +106,6 @@ rule trim_reads_with_cutadapt:
         """
 
 
-# align reads to genome
 rule align_reads_with_bowtie2:
     input:
         R1="results/trimmed/{sample}_trimmed_R1.fastq.gz",
@@ -133,7 +130,6 @@ rule align_reads_with_bowtie2:
         """
 
 
-# merge replicates
 rule merge_replicates:
     input:
         expand(
@@ -160,9 +156,6 @@ rule merge_replicates:
         """
 
 
-# get species of interest reads
-
-
 rule get_species_of_interest_reads:
     input:
         bam="results/aligned/{sample}.bam",
@@ -184,9 +177,6 @@ rule get_species_of_interest_reads:
         samtools view --threads {params.bowtie2_samtools_threads} -c {output.bam} >> {log}
         rm {output.bam}tmp.bed
         """
-
-
-# call peaks with sicer
 
 
 rule call_peaks_with_sicer:
@@ -211,9 +201,6 @@ rule call_peaks_with_sicer:
         """
         sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
         """
-
-
-# call narrow peaks with macs2
 
 
 rule call_narrow_peaks_with_macs2:
@@ -241,9 +228,6 @@ rule call_narrow_peaks_with_macs2:
         """
 
 
-# call broad peaks with macs2
-
-
 rule call_broad_peaks_with_macs2:
     input:
         unpack(
@@ -269,9 +253,6 @@ rule call_broad_peaks_with_macs2:
         macs2 --version > {log}
         macs2 callpeak -t {input.treatment} -c {input.control} -f BAMPE -g {params.effective_genome_size} -n {params.sample_name}_{params.minimum_FDR_cutoff} -q {params.minimum_FDR_cutoff} --broad --outdir results/macs2_broadPeaks/
         """
-
-
-# make bigwigs without spike-in normalization
 
 
 rule make_bigwigs_no_spikein:
