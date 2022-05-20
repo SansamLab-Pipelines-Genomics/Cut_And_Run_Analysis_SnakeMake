@@ -120,9 +120,6 @@ rule align_reads_with_bowtie2:
     output:
         bam="results/aligned/{sample}.bam",
         bai="results/aligned/{sample}.bam.bai",
-        completion_marker=touch(
-            "results/aligned/align_reads_with_bowtie2_{sample}.done"
-        ),
     wildcard_constraints:
         sample="((?!_merged).)*",
     conda:
