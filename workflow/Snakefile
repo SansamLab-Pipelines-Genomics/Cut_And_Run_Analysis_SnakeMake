@@ -128,17 +128,36 @@ rule align_reads_with_bowtie2:
         bowtie2 --met-file {log} --threads {params.bowtie2_threads} --dovetail --phred33 --maxins 2000 -x {params.bowtie2_genome} -1 {input.R1} -2 {input.R2} | samtools view -b - | samtools sort --threads {params.bowtie2_samtools_threads} - -o {output.bam}
         samtools index {output.bam}
         """
-
+        
+        
+rule quality_filter_aligned_reads:
+    input:
+        bam="results/aligned/{sample}.bam",
+    output:
+        bam="results/aligned_and_filtered/{sample}.bam"
+        bai="results/aligned_and_filtered/{sample}.bam.bai"
+    params:
+        bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
+    wildcard_constraints:
+        sample="((?!_merged).)*",
+    conda:
+        "envs/samtools.yml"
+    shell:
+        """
+        samtools view -h --threads {params.bowtie2_samtools_threads} -b -q 10 -F 1036 {input.bam} > {output.bam}
+        samtools index {output.bam}
+        """
+        
 
 rule merge_replicates:
     input:
         expand(
-            "results/aligned/{sample}.bam",
+            "results/aligned_and_filtered/{sample}.bam",
             sample=cf.make_samples_to_merge_list(samples_table_w_merged_suffix),
         ),
     output:
-        bam="results/aligned/{sample}.bam",
-        bai="results/aligned/{sample}.bam.bai",
+        bam="results/aligned_and_filtered/{sample}.bam",
+        bai="results/aligned_and_filtered/{sample}.bam.bai",
     params:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
         inputs=lambda wildcards: cf.make_bams_to_merge_dict(
@@ -158,7 +177,7 @@ rule merge_replicates:
 
 rule get_species_of_interest_reads:
     input:
-        bam="results/aligned/{sample}.bam",
+        bam="results/aligned_and_filtered/{sample}.bam",
     output:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     params:
