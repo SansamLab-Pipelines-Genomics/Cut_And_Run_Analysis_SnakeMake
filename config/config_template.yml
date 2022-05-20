@@ -16,6 +16,8 @@ cutadapt_adapterfile: "/usr/local/analysis/trimmomatic/0.35/lib/adapters/TruSeq3
 bowtie2_genome: "/Volumes/Sansam/hpc-nobackup/bowtie2Indexes/hg38_ecoli_bowtie2Index/hg38_ecoli_bowtie2Index"
 bowtie2_threads: 12
 bowtie2_samtools_threads: 12
+# samtools filter flag - 1036 is UNMAP,MUNMAP,DUP
+samtools_filter_flag: 1036
 # sicer options:
 sicer_genome: "hg38"
 sicer_windowSize: 200
