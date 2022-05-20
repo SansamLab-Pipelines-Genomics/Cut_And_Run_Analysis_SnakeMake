@@ -36,7 +36,7 @@ def get_bams_to_merge(smpl,tbl):
   samples_list=tbl['sample'].to_list()
   indices=[i for i,x in enumerate(merged_list) if x==smpl]
   samples_list2 = [samples_list[i] for i in indices]
-  samples_list3 = ['results/aligned/' + s + '.bam' for s in samples_list2]
+  samples_list3 = ['results/aligned_and_filtered/' + s + '.bam' for s in samples_list2]
   samples_string = ' '.join([str(item) for item in samples_list3])
   return samples_string
 
