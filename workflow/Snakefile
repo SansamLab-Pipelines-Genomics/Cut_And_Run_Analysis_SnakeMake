@@ -69,11 +69,11 @@ rule fastqc_reads:
                 "fq2": samples_table.loc[wildcards.sample, "fastq2"],
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack   # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
-    output:
-        html1="results/qc/fastqc/{sample}_R1_fastqc.html",
-        zip1="results/qc/fastqc/{sample}_R1_fastqc.zip",
-        html2="results/qc/fastqc/{sample}_R2_fastqc.html",
-        zip2="results/qc/fastqc/{sample}_R2_fastqc.zip",
+    #output:
+    #    html1="results/qc/fastqc/{sample}_R1_fastqc.html",
+    #    zip1="results/qc/fastqc/{sample}_R1_fastqc.zip",
+    #    html2="results/qc/fastqc/{sample}_R2_fastqc.html",
+    #    zip2="results/qc/fastqc/{sample}_R2_fastqc.zip",
     conda:
         "envs/CutAndRun_Conda_Environment.yml"
     log:
