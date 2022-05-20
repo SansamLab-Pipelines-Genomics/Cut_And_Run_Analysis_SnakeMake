@@ -3,7 +3,7 @@
 # if this script is executed from the snakemake results directory it will generate md5sum hashes for important results files
 
 ## make directory for the md5sum hash files
-mkdir -p md5_hashes
+mkdir -p results/md5_hashes
 
 md5sum results/aligned/*.bam > results/md5_hashes/aligned.md5
 md5sum results/aligned/*.bai >> results/md5_hashes/aligned.md5
