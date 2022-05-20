@@ -82,17 +82,8 @@ rule fastqc_reads:
         sample="((?!_merged).)*",
     shell:
         """
-        fastqc {input.fq1}
-        fastqc {input.fq2}
-        dir=$(dirname {input.fq1})
-        bsename=$(basename {input.fq1} .gz)
-        bsename=$(basename ${{bsename}} .fastq)
-        mv ${{dir}}/${{bsename}}_fastqc.html {output.html1}
-        mv ${{dir}}/${{bsename}}_fastqc.zip {output.zip1}
-        bsename=$(basename {input.fq2} .gz)
-        bsename=$(basename ${{bsename}} .fastq)
-        mv ${{dir}}/${{bsename}}_fastqc.html {output.html2}
-        mv ${{dir}}/${{bsename}}_fastqc.zip {output.zip2}
+        fastqc -o results/qc/fastqc/ {input.fq1}
+        fastqc -o results/qc/fastqc/ {input.fq2}
         """
 
 
