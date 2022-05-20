@@ -138,13 +138,14 @@ rule quality_filter_aligned_reads:
         bai="results/aligned_and_filtered/{sample}.bam.bai"
     params:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
+        flag=config["samtools_filter_flag"],
     wildcard_constraints:
         sample="((?!_merged).)*",
     conda:
         "envs/samtools.yml"
     shell:
         """
-        samtools view -h --threads {params.bowtie2_samtools_threads} -b -q 10 -F 1036 {input.bam} > {output.bam}
+        samtools view -h --threads {params.bowtie2_samtools_threads} -b -q 10 -F {params.flag} {input.bam} > {output.bam}
         samtools index {output.bam}
         """
         
