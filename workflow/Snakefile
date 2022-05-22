@@ -65,6 +65,13 @@ rule all:
                 "sample"
             ].to_list()
         ),
+        expand(
+            f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",
+            sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
+                "sample"
+            ].to_list()
+        ),
+        
 
         
 rule trim_reads_with_trimmomatic:
@@ -294,14 +301,15 @@ rule make_fingerprint_plots:
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
-        f"results/fingerprint_plots/{{sample}}_fingerprint.png",
+        fp=f"results/fingerprint_plots/{{sample}}_fingerprint.png",
+        qm=f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",
     params:
         bl=config["blacklist_file"],
     conda:
         "envs/deeptools.yml"
     shell:
         """
-        plotFingerprint --numberOfProcessors max --smartLabels --blackListFileName {params.bl} -b {input.treatment} {input.control} -plot {output}
+        plotFingerprint --outQualityMetrics {qm} --JSDsample {input.control} --numberOfProcessors max --smartLabels --blackListFileName {params.bl} -b {input.treatment} {input.control} -plot {output.fp}
         """    
         
         
