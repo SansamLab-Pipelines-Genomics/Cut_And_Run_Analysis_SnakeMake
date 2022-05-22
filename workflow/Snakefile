@@ -312,13 +312,14 @@ rule make_fragment_sizes_plots:
         fs=f"results/fragment_sizes/{{sample}}_fragment_sizes_stats.txt",
     params:
         bl=config["blacklist_file"],
+        processors=["bowtie2_samtools_threads"],
     conda:
         "envs/deeptools.yml"
     shell:
         """
         mkdir -p results/fragment_sizes_plots/
         mkdir -p results/fragment_sizes/
-        bamPEFragmentSize --outRawFragmentLengths {output.fl} --table {output.fs} --numberOfProcessors max --blackListFileName {params.bl} -b {input.treatment} {input.control} --histogram {output.fp}
+        bamPEFragmentSize --outRawFragmentLengths {output.fl} --table {output.fs} --numberOfProcessors {params.processors} --blackListFileName {params.bl} -b {input.treatment} {input.control} --histogram {output.fp}
         """    
         
         
