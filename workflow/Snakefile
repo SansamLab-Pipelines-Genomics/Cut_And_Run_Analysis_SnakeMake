@@ -55,6 +55,10 @@ rule all:
             sample=cf.keywords_to_merge(samples_table_w_merged_suffix)
             + samples_table["sample"].to_list(),
         ),
+        expand(
+            "results/read_stats/{sample}.csv",
+            sample=samples_table["sample"].to_list()
+        ),
 
         
 rule trim_reads_with_trimmomatic:
