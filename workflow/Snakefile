@@ -312,7 +312,7 @@ rule make_fragment_sizes_plots:
         fs=f"results/fragment_sizes/{{sample}}_fragment_sizes_stats.txt",
     params:
         bl=config["blacklist_file"],
-        processors=["bowtie2_samtools_threads"],
+        processors=config["bowtie2_samtools_threads"],
     conda:
         "envs/deeptools.yml"
     shell:
