@@ -278,7 +278,27 @@ rule call_broad_peaks_with_macs2:
         macs2 callpeak -t {input.treatment} -c {input.control} -f BAMPE -g {params.effective_genome_size} -n {params.sample_name}_{params.minimum_FDR_cutoff} -q {params.minimum_FDR_cutoff} --broad --outdir results/macs2_broadPeaks/
         """
 
-
+  
+rule make_fingerprint_plots:
+    input:
+        unpack(
+            lambda wildcards: {
+                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
+                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
+            }
+        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        f"results/fingerprint_plots/{{sample}}_fingerprint.png",
+    params:
+        bl=config["blacklist_file"],
+    conda:
+        "envs/deeptools.yml"
+    shell:
+        """
+        plotFingerprint --numberOfProcessors max --smartLabels --blackListFileName {params.bl} -b {input.treatment} {input.control} -plot {output}
+        """    
+        
+        
 rule make_bigwigs_no_spikein:
     input:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
