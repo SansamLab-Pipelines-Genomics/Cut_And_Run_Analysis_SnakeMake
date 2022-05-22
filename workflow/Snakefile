@@ -319,6 +319,7 @@ rule make_fragment_sizes_plots:
         """
         mkdir -p results/fragment_sizes_plots/
         mkdir -p results/fragment_sizes/
+        touch {output.fl}
         bamPEFragmentSize --outRawFragmentLengths {output.fl} --table {output.fs} --numberOfProcessors {params.processors} --blackListFileName {params.bl} -b {input.treatment} {input.control} --histogram {output.fp}
         """    
         
