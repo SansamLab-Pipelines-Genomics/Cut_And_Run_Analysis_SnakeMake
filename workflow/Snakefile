@@ -59,6 +59,12 @@ rule all:
             "results/read_stats/{sample}.csv",
             sample=samples_table["sample"].to_list()
         ),
+        expand(
+            f"results/fingerprint_plots/{{sample}}_fingerprint.png",
+            sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
+                "sample"
+            ].to_list()
+        ),
 
         
 rule trim_reads_with_trimmomatic:
