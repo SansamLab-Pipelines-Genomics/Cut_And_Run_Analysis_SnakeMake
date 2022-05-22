@@ -86,3 +86,11 @@ make_fingerprint_plots:
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
     error: results/logs/{rule}.{wildcards.sample}.err
+
+make_fragment_sizes_plots:
+    cpus-per-task: 8
+    mem: 16G
+    cores: 8
+    name: "{rule}.{wildcards.sample}"
+    output: results/logs/{rule}.{wildcards.sample}.log
+    error: results/logs/{rule}.{wildcards.sample}.err
