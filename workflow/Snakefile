@@ -138,7 +138,7 @@ rule quality_filter_aligned_reads:
     input:
         bam="results/aligned/{sample}.bam",
     output:
-        bam="results/aligned_and_filtered/{sample}.bam"
+        bam="results/aligned_and_filtered/{sample}.bam",
         bai="results/aligned_and_filtered/{sample}.bam.bai"
     params:
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
