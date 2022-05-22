@@ -316,6 +316,8 @@ rule make_fragment_sizes_plots:
         "envs/deeptools.yml"
     shell:
         """
+        mkdir -p results/fragment_sizes_plots/
+        mkdir -p results/fragment_sizes/
         bamPEFragmentSize --outRawFragmentLengths {output.fl} --table {output.fs} --numberOfProcessors max --blackListFileName {params.bl} -b {input.treatment} {input.control} --histogram {output.fp}
         """    
         
