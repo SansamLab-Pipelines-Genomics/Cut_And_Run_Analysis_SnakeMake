@@ -307,7 +307,7 @@ rule make_fragment_sizes_plots:
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
-        fp=f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",
+        fp=report(f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png"),
         fl=f"results/fragment_sizes/{{sample}}_fragment_sizes.txt",
         fs=f"results/fragment_sizes/{{sample}}_fragment_sizes_stats.txt",
     params:
@@ -334,7 +334,7 @@ rule make_fingerprint_plots:
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
-        fp=f"results/fingerprint_plots/{{sample}}_fingerprint.png",
+        fp=report(f"results/fingerprint_plots/{{sample}}_fingerprint.png"),
         qm=f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",
     params:
         bl=config["blacklist_file"],
