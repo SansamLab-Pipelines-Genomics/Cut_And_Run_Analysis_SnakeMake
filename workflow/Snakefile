@@ -309,7 +309,7 @@ rule make_fingerprint_plots:
         "envs/deeptools.yml"
     shell:
         """
-        plotFingerprint --outQualityMetrics {qm} --JSDsample {input.control} --numberOfProcessors max --smartLabels --blackListFileName {params.bl} -b {input.treatment} {input.control} -plot {output.fp}
+        plotFingerprint --outQualityMetrics {output.qm} --JSDsample {input.control} --numberOfProcessors max --smartLabels --blackListFileName {params.bl} -b {input.treatment} {input.control} -plot {output.fp}
         """    
         
         
