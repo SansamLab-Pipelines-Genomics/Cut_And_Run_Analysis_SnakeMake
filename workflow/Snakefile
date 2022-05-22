@@ -71,6 +71,12 @@ rule all:
                 "sample"
             ].to_list()
         ),
+        expand(
+            f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",
+            sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
+                "sample"
+            ].to_list()
+        ),
         
 
         
@@ -292,6 +298,28 @@ rule call_broad_peaks_with_macs2:
         """
 
   
+rule make_fragment_sizes_plots:
+    input:
+        unpack(
+            lambda wildcards: {
+                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
+                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
+            }
+        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        fp=f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",
+        fl=f"results/fragment_sizes/{{sample}}_fragment_sizes.txt",
+        fs=f"results/fragment_sizes/{{sample}}_fragment_sizes_stats.txt",
+    params:
+        bl=config["blacklist_file"],
+    conda:
+        "envs/deeptools.yml"
+    shell:
+        """
+        bamPEFragmentSize --outRawFragmentLengths {output.fl} --table {output.fs} --numberOfProcessors max --blackListFileName {params.bl} -b {input.treatment} {input.control} --histogram {output.fp}
+        """    
+        
+        
 rule make_fingerprint_plots:
     input:
         unpack(
