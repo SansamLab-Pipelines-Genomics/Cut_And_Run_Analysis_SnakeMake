@@ -437,14 +437,7 @@ rule calculate_alignment_and_filtering_counts:
         mv {output}_tmp {output}
         """
 
-        
- 
-        expand("results/read_stats/{sample}.csv",sample=samples_table["sample"].to_list()),
-        expand(f"results/fingerprint_plots/{{sample}}_fingerprint.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
-        expand(f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
-        expand(f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
-        
-        
+               
  rule make_html_report:
         input:
             expand("results/read_stats/{sample}.csv",sample=samples_table["sample"].to_list()),
