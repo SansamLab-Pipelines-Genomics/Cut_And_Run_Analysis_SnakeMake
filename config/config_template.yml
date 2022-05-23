@@ -31,3 +31,17 @@ macs2_minimum_FDR_cutoff: 0.05
 macs2_broad_minimum_FDR_cutoff: 0.1
 # bamCoverage options
 bamCoverage_binSize: 100
+#################################################################
+##                     Environment Modules                     ##
+#################################################################
+# These will be specific to your cluster                        #
+#################################################################
+trimmomatic: "trimmomatic/0.35"
+cutadapt: "cutadapt/3.7"
+bowtie2: "bowtie2/2.3.1"
+samtools: "samtools/1.14"
+sicer2: "sicer2/1.0.2"
+macs2: "macs2/2.2.7.1"
+deeptools: "deeptools/3.4.3"
+R: "R/4.1.2-mkl"
+Bioconductor: "bioconductor/3.14"
