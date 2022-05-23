@@ -440,10 +440,10 @@ rule calculate_alignment_and_filtering_counts:
                
  rule make_html_report:
     input:
-        expand("results/read_stats/{sample}.csv",sample=samples_table["sample"].to_list()),
-        expand(f"results/fingerprint_plots/{{sample}}_fingerprint.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
-        expand(f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
-        expand(f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
+        rs=expand("results/read_stats/{sample}.csv",sample=samples_table["sample"].to_list()),
+        fp=expand(f"results/fingerprint_plots/{{sample}}_fingerprint.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
+        fm=expand(f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
+        fs=expand(f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
     output:
         "results/Report.html"
     params:
