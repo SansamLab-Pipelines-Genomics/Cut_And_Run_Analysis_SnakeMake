@@ -448,9 +448,6 @@ rule make_html_report:
         "results/Report.html"
     params:
         samples=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list(),
-    envmodules:
-        config["R"],
-        config["Bioconductor"]
     conda:
         "envs/R_Report.yml"
     log: "results/logs/snakelogs/make_html_report.log"
