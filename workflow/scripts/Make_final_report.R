@@ -8,6 +8,7 @@
 library(cowplot)
 library(knitr)
 library(rmarkdown)
+library(magick)
 
 # get arguments from Snakemake S4 object
 samples <- snakemake@params[["samples"]]
