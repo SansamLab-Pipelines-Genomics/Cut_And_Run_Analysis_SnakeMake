@@ -77,6 +77,7 @@ rule all:
                 "sample"
             ].to_list()
         ),
+        "results/Report.html",
         
 
         
