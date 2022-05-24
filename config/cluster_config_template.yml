@@ -2,7 +2,7 @@
 __default__:
     account: sansam-lab
     partition: serial
-    time: 08:00:00 # time limit for each job
+    time: 16:00:00 # time limit for each job
     cpus-per-task: 2
     mem: 16G
     output: results/logs/slurm-%x.%A.%a.log
