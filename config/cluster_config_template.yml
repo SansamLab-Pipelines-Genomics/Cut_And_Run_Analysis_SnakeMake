@@ -40,6 +40,7 @@ merge_replicates:
     error: results/logs/{rule}.{wildcards.sample}.err
 
 call_peaks_with_sicer:
+    time: 02:00:00
     cpus-per-task: 12
     mem: 96G
     cores: 12
