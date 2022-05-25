@@ -17,7 +17,7 @@ samples = params$samples
 
 ## Aligned read stats
 ```{r results='asis', echo=FALSE, message=FALSE, warning=FALSE}
-samples1 <- samples[-grep("_merged",samples)]
+samples1 <- samples[grep("^((?!_merged).)*$",samples,perl=TRUE)]
 lst <- lapply(samples1,function(smpl){
   df <- (read.csv(paste0("../results/read_stats/",smpl,".csv"),header=F,row.names=1))
   names(df) <- smpl
@@ -32,7 +32,7 @@ print(knitr::kable(df))
 lst <- lapply(samples,function(smpl){
   cowplot::ggdraw() + cowplot::draw_image(paste0("../results/fragment_sizes_plots/",smpl,"_fragment_sizes.png"), scale = 1)
 })
-cowplot::plot_grid(plotlist=lst,labels=samples)
+cowplot::plot_grid(plotlist=lst,labels=samples,label_size = 8)
 ```
 
 ## Fragment sizes stats
@@ -53,7 +53,7 @@ for (smpl in samples) {
 lst <- lapply(samples,function(smpl){
   cowplot::ggdraw() + cowplot::draw_image(paste0("../results/fingerprint_plots/",smpl,"_fingerprint.png"), scale = 1)
 })
-cowplot::plot_grid(plotlist=lst,labels=samples)
+cowplot::plot_grid(plotlist=lst,labels=samples,label_size = 8)
 ```
 
 ## Fingerprint stats
