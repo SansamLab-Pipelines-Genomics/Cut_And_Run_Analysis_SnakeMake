@@ -30,7 +30,7 @@ for (smpl in samples1) {
 lst <- lapply(samples,function(smpl){
   cowplot::ggdraw() + cowplot::draw_image(paste0("../results/fragment_sizes_plots/",smpl,"_fragment_sizes.png"), scale = 1)
 })
-cowplot::plot_grid(plotlist=lst,labels=samples,label_size = 6)
+cowplot::plot_grid(plotlist=lst,labels=samples,label_size = 6,ncol=2)
 ```
 
 ## Fragment sizes stats
@@ -51,7 +51,7 @@ for (smpl in samples) {
 lst <- lapply(samples,function(smpl){
   cowplot::ggdraw() + cowplot::draw_image(paste0("../results/fingerprint_plots/",smpl,"_fingerprint.png"), scale = 1)
 })
-cowplot::plot_grid(plotlist=lst,labels=samples,label_size = 6)
+cowplot::plot_grid(plotlist=lst,labels=samples,label_size = 6,ncol=2)
 ```
 
 ## Fingerprint stats
