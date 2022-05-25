@@ -18,13 +18,10 @@ samples = params$samples
 ## Aligned read stats
 ```{r results='asis', echo=FALSE, message=FALSE, warning=FALSE}
 samples1 <- samples[grep("^((?!_merged).)*$",samples,perl=TRUE)]
-lst <- lapply(samples1,function(smpl){
+for (smpl in samples1) {
   df <- (read.csv(paste0("../results/read_stats/",smpl,".csv"),header=F,row.names=1))
-  names(df) <- smpl
-  return(df)
-})
-df <- do.call("cbind",lst)
-print(knitr::kable(df))
+  print(knitr::kable(df,caption=smpl))
+}
 ```
 
 ## Fragment sizes plots
