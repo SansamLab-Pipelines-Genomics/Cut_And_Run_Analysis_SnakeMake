@@ -20,6 +20,7 @@ samples = params$samples
 samples1 <- samples[grep("^((?!_merged).)*$",samples,perl=TRUE)]
 for (smpl in samples1) {
   df <- (read.csv(paste0("../results/read_stats/",smpl,".csv"),header=F,row.names=1))
+  names(df) <- "read counts"
   print(knitr::kable(df,caption=smpl))
 }
 ```
