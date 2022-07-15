@@ -43,7 +43,7 @@ Cut_And_Run_Analysis_SnakeMake processes short whole-genome sequencing reads fro
     * [4A.  Modify the config/config.yml file](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4a--modify-the-configconfigyml-file)
     * [4B.  Modify the config/samples.csv file](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4b--modify-the-configsamplescsv-file)
     * [4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4c--if-slurm-resource-changes-are-needed-modify-the-configcluster_configyml-file)
-  * [5.  Do a dry run](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake###5--do-a-dry-run)
+  * [5.  Do a dry run](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#5--do-a-dry-run)
   * [6.  Make a DAG diagram](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#6--make-a-dag-diagram)
   * [7.  Run on cluster with slurm](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#7--run-on-cluster-with-slurm)
   * [8.  Check results, and when finished, exit environment](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#8--check-results-and-when-finished-exit-environment)
