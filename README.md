@@ -248,6 +248,8 @@ cd My_CutAndRun_Project_Folder
 
 ### 3.  Start the conda environment
 ### 3A.  FIRST TIME ONLY:  Setup conda environment
+Note. CutandRun_Conda_Enviornment.yml is found in the workflow folder in the repository you just cloned
+
 ```bash
 # -f is the location of the environment .yml file. 
 ## The relative path assumes that you are in the root directory of this repository.
