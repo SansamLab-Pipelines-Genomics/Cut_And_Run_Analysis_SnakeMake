@@ -280,11 +280,11 @@ You must enter paths to the following:
 
 The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 3 is the sample type (either "treatment" or "control"). Column 5 is the name of the Control sample for each treatment or "NA" for each control. In the example below, two samples share the same control.
 
-| sample      | fastq1              | fastq2              | sampleType | Control   |
-|-------------|---------------------|---------------------|------------|-----------|
-| testSample  | sample_R1.fastq.gz  | sample_R2.fastq.gz  | treatment  | testInput |
-| testSample2 | sample2_R1.fastq.gz | sample2_R2.fastq.gz | treatment  | testInput |
-| testInput   | input_R1.fastq.gz   | input_R2.fastq.gz   | control    | NA        |
+| sample      | fastq1              | fastq2              | sampleType | Control   | merged_sample |
+|-------------|---------------------|---------------------|------------|-----------|---------------|
+| testSample  | sample_R1.fastq.gz  | sample_R2.fastq.gz  | treatment  | testInput | NA            |
+| testSample2 | sample2_R1.fastq.gz | sample2_R2.fastq.gz | treatment  | testInput | NA            |
+| testInput   | input_R1.fastq.gz   | input_R2.fastq.gz   | control    | NA        | NA            |
 
 #### 4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file
 
