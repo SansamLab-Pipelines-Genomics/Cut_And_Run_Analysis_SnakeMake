@@ -235,6 +235,8 @@ Note. The commands to do this will be different on your machine. These commands 
 ml slurm
 ml miniconda
 ```
+Note. Jump to 3B if conda enviornment is already created
+
 ### 2.  Clone repository
 ```bash
 git clone https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake.git
@@ -243,8 +245,11 @@ mv Cut_And_Run_Analysis_SnakeMake/ My_CutAndRun_Project_Folder/
 # change directory into root of your project folder
 cd My_CutAndRun_Project_Folder
 ```
+
 ### 3.  Start the conda environment
 ### 3A.  FIRST TIME ONLY:  Setup conda environment
+Note. CutandRun_Conda_Enviornment.yml is found in the workflow folder in the repository you just cloned
+
 ```bash
 # -f is the location of the environment .yml file. 
 ## The relative path assumes that you are in the root directory of this repository.
@@ -259,6 +264,7 @@ conda activate /s/sansam-lab/CutAndRun_Conda_Environment
 
 ### 4.  Modify the job-specific configuration files.
 #### 4A.  Modify the config/config.yml file
+Note. Make sure to rename config file by removing "_template"
 
 You must enter paths to the following:
 * bowtie2_genome:
@@ -277,8 +283,9 @@ You must enter paths to the following:
   * sicer_gapSize:
 
 #### 4B.  Modify the config/samples.csv file
+Note. Make sure to rename sample file by removing "_template"
 
-The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 3 is the sample type (either "treatment" or "control"). Column 5 is the name of the Control sample for each treatment or "NA" for each control. In the example below, two samples share the same control.
+The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 4 is the sample type (either "treatment" or "control"). Column 5 is the name of the corresponding Control sample for each treated sample (use "NA" if the sample is a control). In the example below, the two treated samples share the same control but it is possible to include multple controls if that fits your experimental design.
 
 | sample      | fastq1              | fastq2              | sampleType | Control   | merged_sample |
 |-------------|---------------------|---------------------|------------|-----------|---------------|
