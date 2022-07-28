@@ -226,7 +226,7 @@ sicer \
   -cpu 12
 ```
 
-# Step-by-step instructions on running Snakemake pipeline with **Conda Environmentss**:
+# Step-by-step instructions on running Snakemake pipeline with ***Conda Environments***:
 
 ### 1.  Load slurm, python, pandas, and numpy
 Note. The commands to do this will be different on your machine. These commands are specific to an HPC using slurm with these modules installed.
@@ -256,7 +256,7 @@ mv Cut_And_Run_Analysis_SnakeMake/ My_CutAndRun_Project_Folder/
 # You will need to be in this directory to run the snakefile
 cd My_CutAndRun_Project_Folder
 ```
-**Note. Jump to 5 if conda enviornment is already created**
+** Note. Jump to 5 if conda enviornment is already created **
 
 ### 4.  FIRST TIME ONLY:
 ### 4.  Setup conda environment
@@ -349,7 +349,7 @@ Note. There needs to be an empty results folder in already in your working folde
 
 
 
-# Step-by-step instructions on running Snakemake pipeline with **Enviornment Modules**:
+# Step-by-step instructions on running Snakemake pipeline with ***Enviornment Modules***:
 
 ### 1.  Make working directory and change to that directory
 ```bash
