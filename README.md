@@ -349,7 +349,7 @@ Note. There needs to be an empty results folder in already in your working folde
 
 
 
-# Step-by-step instructions on running Snakemake pipeline with ***Enviornment Modules***:
+# Step-by-step instructions on running Snakemake pipeline with ***Environment Modules***:
 
 ### 1.  Make working directory and change to that directory
 ```bash
