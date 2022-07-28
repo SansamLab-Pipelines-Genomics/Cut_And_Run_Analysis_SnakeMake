@@ -334,6 +334,48 @@ The results will be saved to the "results" folder. Look over log files generated
 conda deactivate
 ```
 
+
+# Run Snakemake with Enviornment Modules
+
+### Make working directory and change to that directory
+```bash
+mkdir CutandRunYY1_Envmod
+cd CutandRunYY1_Envmod
+```
+
+### load modules needed for snakemake
+```bash
+ml slurm python/3.7.0  pandas/1.0.3  numpy/1.18.2
+```
+
+### Snakemake dry run
+```bash
+snakemake -npr
+```
+
+### Submit to cluster
+```
+sbatch --constraint=westmere \
+--wrap="\
+snakemake \
+-R \
+-j 999 \
+--use-envmodules \
+--latency-wait 100 \
+--cluster-config config/cluster_config.yml \
+--cluster '\
+sbatch \
+-A {cluster.account} \
+-p {cluster.partition} \
+--cpus-per-task {cluster.cpus-per-task}  \
+--mem {cluster.mem} \
+--output {cluster.output}'"
+```
+
+
+
+
+
 ## Citations
 
 Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: A flexible trimmer for Illumina sequence data. Bioinformatics, 30(15), 2114–2120. https://doi.org/10.1093/bioinformatics/btu170
