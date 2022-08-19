@@ -25,7 +25,7 @@ samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_ta
 
 
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here
-if config['sicer_run'] == 'TRUE':
+if config['sicer_run'] == True:
     rule all:
         input:
             expand(
