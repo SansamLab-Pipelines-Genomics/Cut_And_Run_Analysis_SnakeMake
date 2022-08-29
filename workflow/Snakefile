@@ -32,7 +32,7 @@ rule all:
             sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
                 "sample"
             ].to_list(),
-        ) if config['sicer_run'] == True else "",
+        ) if config['sicer_run'] == True else None,
         expand(
             f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
             sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
