@@ -37,7 +37,7 @@ rule all:
         ) if config['sicer_run'] == True else ".placeholder",
         expand(
             f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
-            sample=set(list(samples_table2.index.map(str))),
+            sample=set(samples_table2),
         ) if config['macs2_run'] == True else ".placeholder",
         expand(
             f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak",
