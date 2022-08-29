@@ -8,6 +8,7 @@ configfile: "config/config.yml"
 import pandas as pd
 import re
 import common_functions as cf
+import shutil
 from datetime import datetime
 now = datetime.now()
 tmstmp = str(now.strftime("%y%m%d_%H%M"))
@@ -211,39 +212,40 @@ rule quality_filter_aligned_reads:
         samtools view -h --threads {params.bowtie2_samtools_threads} -b -q 10 -F {params.flag} {input.bam} > {output.bam}
         samtools index {output.bam}
         """
-        
 
+
+def bamFilenames_from_mergedSamples(wildcards):
+    df = samples_table.set_index"merged_sample"
+    mylist = list(df.loc[wildcards.sample, "sample"])
+    return ' '.join(["results/aligned_and_filtered/" + s + ".bam" for s in mylist])
+    
 rule merge_replicates:
     input:
         expand(
             "results/aligned_and_filtered/{sample}.bam",
-            sample=cf.make_samples_to_merge_list(samples_table_w_merged_suffix),
+            sample=samples_table["sample"].to_list()
         ),
-    output:
-        bam="results/aligned_and_filtered/{sample}.bam",
-        bai="results/aligned_and_filtered/{sample}.bam.bai",
+        expand(
+            "results/aligned_and_filtered/{sample}.bam.bai",
+            sample=samples_table["sample"].to_list()
+        ),
     params:
+        bams=lambda wildcards: bamFilenames_from_mergedSamples(wildcards.sample),
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
-        inputs=lambda wildcards: cf.make_bams_to_merge_dict(
-            cf.keywords_to_merge(samples_table_w_merged_suffix),
-            samples_table_w_merged_suffix,
-        )[wildcards.sample],
-    wildcard_constraints:
-        sample=".*_merged.*",
-    conda:
-        "envs/samtools.yml"
-    envmodules:
-        config["samtools"]
+    output:
+        bam="results/merged/{sample}.bam",
+        bai="results/merged/{sample}.bam.bai",
+    envmodules: 
+        config["samtools"],
     shell:
         """
-        samtools merge -o {output.bam} --threads {params.bowtie2_samtools_threads} {params.inputs}
-        samtools index {output.bam}
+        samtools merge -@ {params.bowtie2_samtools_threads} {output.bam} {params.bams}
+        samtools index -@ {params.bowtie2_samtools_threads} {output.bam}
         """
-
-
+        
 rule get_species_of_interest_reads:
     input:
-        bam="results/aligned_and_filtered/{sample}.bam",
+        bam="results/merged/{sample}.bam",
     output:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     params:
@@ -424,7 +426,7 @@ rule make_bigwigs_no_spikein:
 
 rule calculate_spikein_scale_factors:
     input:
-        bam="results/aligned_and_filtered/{sample}.bam",
+        bam="results/merged/{sample}.bam",
     output:
         report("results/scale_factors/{sample}_scaleFactor.txt"),
     params:
