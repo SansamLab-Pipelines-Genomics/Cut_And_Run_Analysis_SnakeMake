@@ -188,7 +188,8 @@ rule quality_filter_aligned_reads:
 
 def bamFilenames_from_mergedSamples(wildcard):
     df = samples_table.set_index("merged_sample")
-    mylist = list(str(df.loc[wildcard, "sample"]))
+    mylist = list(df.loc[wildcard, "sample"])
+    mylist = [str(i) for i in mylist]
     return ' '.join(["results/aligned_and_filtered/" + s + ".bam" for s in mylist])
     
 rule merge_replicates:
