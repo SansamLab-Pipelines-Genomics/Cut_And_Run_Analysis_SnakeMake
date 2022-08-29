@@ -41,13 +41,13 @@ rule all:
             sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
                 "sample"
             ].to_list(),
-        ),
+        ) if config['macs2_run'] == True else "results/Report.html",
         expand(
             f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak",
             sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
                 "sample"
             ].to_list(),
-        ),
+        ) if config['macs2Broad_run'] == True else "results/Report.html",
         expand(
             "results/bigwigs_no_spikein/{sample}.bw",
             sample=cf.keywords_to_merge(samples_table_w_merged_suffix)
