@@ -5,7 +5,7 @@
 import pandas as pd
 import re
 
-def bamFilenames_from_mergedSamples(wildcard):
+def bamFilenames_from_mergedSamples(wildcard,samples_table):
   df = samples_table.set_index("merged_sample")
   df2 = df.loc[wildcard, "sample"]
   if isinstance(df2, str):
