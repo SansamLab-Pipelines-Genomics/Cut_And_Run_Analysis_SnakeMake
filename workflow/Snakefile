@@ -262,7 +262,7 @@ rule call_narrow_peaks_with_macs2:
     input:
         unpack(
             lambda wildcards: {
-                "control": f"results/aligned_speciesOfInterest/{list(samples_table2[wildcards.sample,])}.bam",
+                "control": f"results/aligned_speciesOfInterest/{list(samples_table2.loc[[wildcards.sample]])}.bam",
                 "treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam",
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
