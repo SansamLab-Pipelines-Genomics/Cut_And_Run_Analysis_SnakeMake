@@ -243,8 +243,8 @@ rule call_peaks_with_sicer:
     input:
         unpack(
             lambda wildcards: {
-                "treatment": f"results/aligned_speciesOfInterest/samples_table.loc[wildcards.sample, 'sample']}.bam",
-                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
+                "control": f"results/aligned_speciesOfInterest/{samples_table2[wildcards.sample,]}.bam",
+                "treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam",
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
@@ -294,8 +294,8 @@ rule call_broad_peaks_with_macs2:
     input:
         unpack(
             lambda wildcards: {
-                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
-                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
+                "control": f"results/aligned_speciesOfInterest/{samples_table2[wildcards.sample,]}.bam",
+                "treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam",
             }
         ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
