@@ -24,9 +24,8 @@ samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_ta
 
 
 ##################################################################
-##                           rules                              ##
+##        set all ulitimate output files in "rule all"          ##
 ##################################################################
-
 
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here
 rule all:
@@ -83,6 +82,9 @@ rule write_repo_release:
         git describe --tag > {output}
         """        
         
+##################################################################
+##                         trim reads                           ##
+##################################################################
         
 rule trim_reads_with_trimmomatic:
     input:
@@ -112,8 +114,7 @@ rule trim_reads_with_trimmomatic:
         """
         trimmomatic PE -threads {params.trimmomatic_threads} {input.fq1} {input.fq2} {output.trimmed1} {output.orphaned1} {output.trimmed2} {output.orphaned2} ILLUMINACLIP:{params.trimmomatic_adapterfile}:2:15:4:4:true LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:25
         """
-
-
+        
 rule trim_reads_with_cutadapt:
     input:
         R1="results/trimmed/{sample}_trimmomatic_R1.fastq.gz",
@@ -135,8 +136,11 @@ rule trim_reads_with_cutadapt:
         """
         cutadapt --json {log} --cores=0 -a file:{params.cutadapt_adapterfile} -A file:{params.cutadapt_adapterfile} -a G{{100}} -A G{{100}} --minimum-length 25 --quality-cutoff 20,20 -e 0.2 --output {output.trimmed1} --paired-output {output.trimmed2} {input.R1} {input.R2}
         """
-
-
+        
+##################################################################
+##                        align reads                           ##
+##################################################################
+        
 rule align_reads_with_bowtie2:
     input:
         R1="results/trimmed/{sample}_trimmed_R1.fastq.gz",
@@ -163,7 +167,10 @@ rule align_reads_with_bowtie2:
         samtools index {output.bam}
         """
         
-        
+##################################################################
+##                    filter and merge bams                     ##
+##################################################################
+             
 rule quality_filter_aligned_reads:
     input:
         bam="results/aligned/{sample}.bam",
@@ -207,6 +214,113 @@ rule merge_replicates:
         """
         samtools merge -@ {params.bowtie2_samtools_threads} {output.bam} {params.bams}
         samtools index -@ {params.bowtie2_samtools_threads} {output.bam}
+        """
+        
+rule get_species_of_interest_reads:
+    input:
+        bam="results/merged/{sample}.bam",
+    output:
+        bam="results/aligned_speciesOfInterest/{sample}.bam",
+    params:
+        chromosomeSizes=f"resources/chromosome_sizes/{str(config['genome_of_interest'])}.chrom.sizes",
+        bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
+    conda:
+        "envs/samtools.yml"
+    envmodules:
+        config["samtools"]
+    log:
+        "results/logs/snakelogs/get_species_of_interest_reads.{sample}.log",
+    shell:
+        """
+        awk -F '\t' '{{ print $1,"1",$2 }}' OFS='\t' {params.chromosomeSizes} > {output.bam}tmp.bed
+        samtools view --threads {params.bowtie2_samtools_threads} -bS -ML {output.bam}tmp.bed {input.bam} > {output.bam}
+        samtools index {output.bam}
+        echo "Number of species-of-interest reads:" > {log}
+        samtools view --threads {params.bowtie2_samtools_threads} -c {output.bam} >> {log}
+        rm {output.bam}tmp.bed
+        """
+        
+##################################################################
+##                          call peaks                          ##
+##################################################################
+
+rule call_peaks_with_sicer:
+    input:
+        unpack(
+            lambda wildcards: {
+                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
+                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
+            }
+        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed",
+    params:
+        sicer_genome=config["sicer_genome"],
+        sicer_windowSize=config["sicer_windowSize"],
+        sicer_fragmentSize=config["sicer_fragmentSize"],
+        sicer_fdr=config["sicer_fdr"],
+        sicer_gapSize=config["sicer_gapSize"],
+    conda:
+        "envs/sicer2.yml"
+    envmodules:
+        config["sicer2"]
+    shell:
+        """
+        sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
+        """
+        
+rule call_narrow_peaks_with_macs2:
+    input:
+        unpack(
+            lambda wildcards: {
+                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
+                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
+            }
+        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
+    params:
+        effective_genome_size=config["effective_genome_size"],
+        minimum_FDR_cutoff=str(config["macs2_minimum_FDR_cutoff"]),
+        sample_name="{sample}",
+    conda:
+        "envs/callPeaks.yml"
+    envmodules:
+        config["macs2"]
+    log:
+        f"results/logs/snakelogs/call_narrow_peaks_with_macs2.{{sample}}_q{str(config['macs2_minimum_FDR_cutoff'])}.log",
+    shell:
+        """
+        macs2 --version > {log}
+        macs2 callpeak -t {input.treatment} -c {input.control} -f BAMPE -g {params.effective_genome_size} -n {params.sample_name}_{params.minimum_FDR_cutoff} -q {params.minimum_FDR_cutoff} --outdir results/macs2_normalPeaks/
+        """
+
+rule call_broad_peaks_with_macs2:
+    input:
+        unpack(
+            lambda wildcards: {
+                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
+                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
+            }
+        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+    output:
+        f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak",
+    params:
+        effective_genome_size=config["effective_genome_size"],
+        minimum_FDR_cutoff=config["macs2_broad_minimum_FDR_cutoff"],
+        sample_name="{sample}",
+    conda:
+        "envs/callPeaks.yml"
+    envmodules:
+        config["macs2"]
+    log:
+        "results/logs/snakelogs/call_broad_peaks_with_macs2.{sample}_q"
+        + str(config["macs2_broad_minimum_FDR_cutoff"])
+        + ".log",
+    shell:
+        """
+        macs2 --version > {log}
+        macs2 callpeak -t {input.treatment} -c {input.control} -f BAMPE -g {params.effective_genome_size} -n {params.sample_name}_{params.minimum_FDR_cutoff} -q {params.minimum_FDR_cutoff} --broad --outdir results/macs2_broadPeaks/
         """
         
 rule dummy:
