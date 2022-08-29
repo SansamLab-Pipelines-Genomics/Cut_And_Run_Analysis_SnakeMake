@@ -8,6 +8,9 @@ configfile: "config/config.yml"
 import pandas as pd
 import re
 import common_functions as cf
+from datetime import datetime
+now = datetime.now()
+tmstmp = str(now.strftime("%y%m%d_%H%M"))
 
 ##################################################################
 ##                read and modify samples table                 ##
@@ -32,7 +35,7 @@ rule all:
             sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
                 "sample"
             ].to_list(),
-        ) if config['sicer_run'] == True else None,
+        ) if config['sicer_run'] == True else "results/Report.html",
         expand(
             f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
             sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
@@ -78,8 +81,36 @@ rule all:
             ].to_list()
         ),
         "results/Report.html",
+        "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/config.yml",
+        "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/" + config["samples_csv"],
+        "results/" + tmstmp + "_run_details_" + str(config["experimentName"]) + "/repo_release.txt",
 
-            
+##################################################################
+##                       document run                           ##
+##################################################################
+
+# copy config and samples files to a directory
+rule copy_config_files:
+    output:
+        "results/" + tmstmp + "_run_details_{sample}/config.yml",
+        "results/" + tmstmp + "_run_details_{sample}/" + config["samples_csv"]
+    params:
+        config["samples_csv"]
+    run:
+        shutil.copyfile('config/config.yml', output[0])
+        shutil.copyfile(params[0], output[1])
+
+
+# write the current repo release to a file
+rule write_repo_release:
+    output:
+        "results/" + tmstmp + "_run_details_{sample}/repo_release.txt"
+    shell:
+        """
+        git describe --tag > {output}
+        """        
+        
+        
 rule trim_reads_with_trimmomatic:
     input:
         unpack(
