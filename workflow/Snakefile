@@ -185,11 +185,11 @@ rule merge_replicates:
     input:
         expand(
             "results/aligned_and_filtered/{sample}.bam",
-            sample=samples_table["sample"].dropna().values.tolist()
+            sample=set(samples_table["merged_sample"].values.tolist())
         ),
         expand(
             "results/aligned_and_filtered/{sample}.bam.bai",
-            sample=samples_table["sample"].dropna().values.tolist()
+            sample=set(samples_table["merged_sample"].values.tolist())
         ),
     params:
         bams=lambda wildcards: cf.bamFilenames_from_mergedSamples(wildcards.sample,samples_table),
