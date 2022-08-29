@@ -1,6 +1,10 @@
 experimentName: test
 # samples file
 samples_csv: "config/samples.csv"
+# Peak callers to run
+macs2_run: False
+sicer_run: False
+macs2Broad_run: False
 # genome-of-interest (must be dm6, danRer7, danRer10, danRer11, hg19, hg38, mm9, mm10, or mm39)
 genome_of_interest: "hg38"
 # effective genome size
@@ -20,7 +24,6 @@ bowtie2_samtools_threads: 12
 # samtools filter flag - 1036 is UNMAP,MUNMAP,DUP
 samtools_filter_flag: 1036
 # sicer options:
-sicer_run: True
 sicer_genome: "hg38"
 sicer_windowSize: 200
 sicer_fragmentSize: 150
