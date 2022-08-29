@@ -22,7 +22,6 @@ samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=Fals
 samples_table = samples_table.applymap(str)
 #samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_table)
 samples_table2 = (samples_table.set_index("merged_sample").dropna())["Control"].drop_duplicates()
-treated_merged = [samples_table2 for incom in incoms if str(incom) != 'nan']
 
 
 ##################################################################
