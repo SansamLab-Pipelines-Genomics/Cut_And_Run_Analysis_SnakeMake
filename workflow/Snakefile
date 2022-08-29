@@ -190,7 +190,7 @@ def bamFilenames_from_mergedSamples(wildcard):
     df = samples_table.set_index("merged_sample")
     df2 = df.loc[wildcard, "sample"]
     if isinstance(df2, str):
-        return ' '.join("results/aligned_and_filtered/" + df2 + ".bam")
+        return "results/aligned_and_filtered/" + df2 + ".bam"
     else:
         return ' '.join(["results/aligned_and_filtered/" + str(s) + ".bam" for s in list(df2)])
     
