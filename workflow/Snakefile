@@ -45,7 +45,7 @@ rule all:
         ) if config['macs2Broad_run'] == True else ".placeholder",
         expand(
             "results/merged/{sample}.bam",
-            sample=set(samples_table["merged_sample"].to_list()),
+            sample=set(samples_table["merged_sample"].dropna().to_list()),
         ),
         #"results/Report.html",
         "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/config.yml",
