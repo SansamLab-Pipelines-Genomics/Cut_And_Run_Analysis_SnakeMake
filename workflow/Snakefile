@@ -196,7 +196,7 @@ rule merge_replicates:
             sample=samples_table["sample"].to_list()
         ),
     params:
-        bams=lambda wildcards: cf.bamFilenames_from_mergedSamples(wildcards.sample),
+        bams=lambda wildcards: cf.bamFilenames_from_mergedSamples(wildcards.sample,samples_table),
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
     output:
         bam="results/merged/{sample}.bam",
