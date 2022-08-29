@@ -24,7 +24,7 @@ samples_table = samples_table.applymap(str)
 samples_table2 = (samples_table.set_index("merged_sample").dropna())["Control"].drop_duplicates()
 merged_samples = set(samples_table["merged_sample"].tolist())
 all_samples = set(samples_table["sample"].tolist())
-merged_tx_samples = (samples_table.dropna())["merged_sample"].drop_duplicates()
+merged_tx_samples = list((samples_table.dropna())["merged_sample"].drop_duplicates())
 
 
 ##################################################################
