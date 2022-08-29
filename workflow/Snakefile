@@ -22,6 +22,8 @@ samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=Fals
 samples_table = samples_table.applymap(str)
 #samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_table)
 samples_table2 = (samples_table.set_index("merged_sample").dropna())["Control"].drop_duplicates()
+merged_samples = set(samples_table["merged_sample"].tolist())
+all_samples = set(samples_table["sample"].tolist())
 
 
 ##################################################################
@@ -33,19 +35,19 @@ rule all:
     input:
         expand(
             f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed",
-            sample=set(samples_table2.index.dropna().to_list()),
+            sample=merged_samples,
         ) if config['sicer_run'] == True else ".placeholder",
         expand(
             f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
-            sample=set(samples_table2.index.dropna().to_list()),
+            sample=merged_samples,
         ) if config['macs2_run'] == True else ".placeholder",
         expand(
             f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak",
-            sample=set(samples_table2.index.dropna().to_list()),
+            sample=merged_samples,
         ) if config['macs2Broad_run'] == True else ".placeholder",
         expand(
             "results/merged/{sample}.bam",
-            sample=set(samples_table["merged_sample"].dropna().values.tolist()),
+            sample=merged_samples,
         ),
         #"results/Report.html",
         "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/config.yml",
