@@ -50,36 +50,8 @@ rule all:
             ].to_list(),
         ) if config['macs2Broad_run'] == True else "results/Report.html",
         expand(
-            "results/bigwigs_no_spikein/{sample}.bw",
-            sample=cf.keywords_to_merge(samples_table_w_merged_suffix)
-            + samples_table["sample"].to_list(),
-        ),
-        expand(
-            f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw",
-            sample=cf.keywords_to_merge(samples_table_w_merged_suffix)
-            + samples_table["sample"].to_list(),
-        ),
-        expand(
-            "results/read_stats/{sample}.csv",
-            sample=samples_table["sample"].to_list()
-        ),
-        expand(
-            f"results/fingerprint_plots/{{sample}}_fingerprint.png",
-            sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
-                "sample"
-            ].to_list()
-        ),
-        expand(
-            f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",
-            sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
-                "sample"
-            ].to_list()
-        ),
-        expand(
-            f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",
-            sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)[
-                "sample"
-            ].to_list()
+            "results/merged/{sample}.bam",
+            sample=set(samples_table["merged_sample"].to_list()),
         ),
         "results/Report.html",
         "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/config.yml",
