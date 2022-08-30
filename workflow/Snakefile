@@ -383,18 +383,13 @@ rule make_bigwigs_with_spikein:
         """
 
 	
-	
 ##################################################################
 ##                              QC                              ##
 ##################################################################
 rule make_fragment_sizes_plots:
     input:
-        unpack(
-            lambda wildcards: {
-                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
-                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
-            }
-        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        treatment="results/aligned_speciesOfInterest/{sample}.bam",
+        control=lambda wildcards: makeCtTxDict(wildcards.sample),
     output:
         fp=report(f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png"),
         fl=f"results/fragment_sizes/{{sample}}_fragment_sizes.txt",
@@ -418,12 +413,8 @@ rule make_fragment_sizes_plots:
         
 rule make_fingerprint_plots:
     input:
-        unpack(
-            lambda wildcards: {
-                "treatment": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'sample']}.bam",
-                "control": f"results/aligned_speciesOfInterest/{cf.make_all_treatments_table(samples_table_w_merged_suffix).loc[wildcards.sample, 'Control']}.bam",
-            }
-        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        treatment="results/aligned_speciesOfInterest/{sample}.bam",
+        control=lambda wildcards: makeCtTxDict(wildcards.sample),
     output:
         fp=report(f"results/fingerprint_plots/{{sample}}_fingerprint.png"),
         qm=f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",
@@ -469,14 +460,14 @@ rule calculate_alignment_and_filtering_counts:
                
 rule make_html_report:
     input:
-        rs=expand("results/read_stats/{sample}.csv",sample=samples_table["sample"].to_list()),
-        fp=expand(f"results/fingerprint_plots/{{sample}}_fingerprint.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
-        fm=expand(f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
-        fs=expand(f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",sample=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list()),
+        rs=expand("results/read_stats/{sample}.csv",sample=all_samples),
+        fp=expand(f"results/fingerprint_plots/{{sample}}_fingerprint.png",sample=merged_samples_noInputs),
+        fm=expand(f"results/fingerprint_quality_metrics/{{sample}}_fingerprint_quality_metrics.txt",sample=merged_samples_noInputs),
+        fs=expand(f"results/fragment_sizes_plots/{{sample}}_fragment_sizes.png",sample=merged_samples_noInputs),
     output:
         "results/Report.html"
     params:
-        samples=cf.make_all_treatments_table(samples_table_w_merged_suffix)["sample"].to_list(),
+        samples=merged_samples_noInputs,
     conda:
         "envs/R_Report.yml"
     envmodules:
@@ -484,7 +475,8 @@ rule make_html_report:
         config["Bioconductor"]
     log: "results/logs/snakelogs/make_html_report.log"
     script:
-        "scripts/Make_final_report.R"
+        "scripts/Make_final_report.R"	
+
 
 	
 rule dummy:
