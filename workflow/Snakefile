@@ -261,17 +261,13 @@ rule call_peaks_with_sicer:
         sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
         """
 
-def makeCtTxDict(wildcards):
-	ControlName = samples_table_noInputs["Control"].loc[wildcards.sample]
-	return {
-	"control": f"results/aligned_speciesOfInterest/{ControlName}.bam",
-	"treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam"
-	}  
+def makeCtTxDict(smp):
+	return "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[smp] + ".bam")  
         
 rule call_narrow_peaks_with_macs2:
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
-	control=(lambda smp: "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[smp] + ".bam")(wildcards.sample)
+	control=lambda wildcards: makeCtTxDict(wildcards.sample)
         #control="results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc['{sample}'] + ".bam",	
     output:
         f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
