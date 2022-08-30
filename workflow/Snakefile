@@ -238,14 +238,13 @@ rule get_species_of_interest_reads:
 ##                          call peaks                          ##
 ##################################################################
 
+def makeCtTxDict(smp):
+	return "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[str(smp)] + ".bam"
+
 rule call_peaks_with_sicer:
     input:
-        unpack(
-            lambda wildcards: {
-                "control": f"results/aligned_speciesOfInterest/{samples_table2[wildcards.sample,]}.bam",
-                "treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam",
-            }
-        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        treatment="results/aligned_speciesOfInterest/{sample}.bam",
+	control=lambda wildcards: makeCtTxDict(wildcards.sample)
     output:
         f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed",
     params:
@@ -262,15 +261,11 @@ rule call_peaks_with_sicer:
         """
         sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
         """
-
-def makeCtTxDict(smp):
-	return "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[str(smp)] + ".bam"
         
 rule call_narrow_peaks_with_macs2:
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
 	control=lambda wildcards: makeCtTxDict(wildcards.sample)
-        #control="results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc['{sample}'] + ".bam",	
     output:
         f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
     params:
@@ -291,12 +286,8 @@ rule call_narrow_peaks_with_macs2:
 
 rule call_broad_peaks_with_macs2:
     input:
-        unpack(
-            lambda wildcards: {
-                "control": f"results/aligned_speciesOfInterest/{samples_table2[wildcards.sample,]}.bam",
-                "treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam",
-            }
-        ),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        treatment="results/aligned_speciesOfInterest/{sample}.bam",
+	control=lambda wildcards: makeCtTxDict(wildcards.sample)
     output:
         f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak",
     params:
