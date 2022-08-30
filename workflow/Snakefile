@@ -262,7 +262,7 @@ rule call_peaks_with_sicer:
         """
 
 def makeCtTxDict(smp):
-	return "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[smp] + ".bam")  
+	return "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[smp] + ".bam"
         
 rule call_narrow_peaks_with_macs2:
     input:
