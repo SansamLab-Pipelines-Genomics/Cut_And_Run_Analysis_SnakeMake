@@ -52,7 +52,7 @@ rule all:
             "results/merged/{sample}.bam",
             sample=merged_samples,
         ),
-        "results/Report.html",
+        #"results/Report.html",
         "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/config.yml",
         "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/" + config["samples_csv"],
         "results/" + tmstmp + "_run_details_" + str(config["experimentName"]) + "/repo_release.txt",
