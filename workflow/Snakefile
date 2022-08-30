@@ -261,16 +261,16 @@ rule call_peaks_with_sicer:
         sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
         """
 
-def makeCtTxDict(wildcard,samples_table_noInputs):
-	ControlName = samples_table_noInputs["Control"].loc[wildcard]
+def makeCtTxDict(wildcards):
+	ControlName = samples_table_noInputs["Control"].loc[wildcards.sample]
 	return {
 	"control": f"results/aligned_speciesOfInterest/{ControlName}.bam",
-	"treatment": f"results/aligned_speciesOfInterest/{wildcard}.bam"
+	"treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam"
 	}  
         
 rule call_narrow_peaks_with_macs2:
     input:
-        unpack(makeCtTxDict({sample},samples_table_noInputs)),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
+        unpack(makeCtTxDict),  # <--- we need to wrap our input function inside a special Snakemake function called unpack() which turns the dict into a collection of named inputs
     output:
         f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
     params:
