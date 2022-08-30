@@ -18,14 +18,16 @@ tmstmp = str(now.strftime("%y%m%d_%H%M"))
 ##################################################################
 
 # this reads the CSV file and sets an index using the values in the sample column.
-samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False).applymap(str)
+samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False)
 samples_table_noInputs = samples_table.dropna(subset=["Control"])
 #samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_table)
 #samples_table2 = (samples_table.set_index("merged_sample").dropna())["Control"].drop_duplicates()
 merged_samples = list(set(samples_table["merged_sample"]))
+merged_samples = [str(i) for i in merged_samples]
 merged_samples_noInputs = list(set(samples_table_noInputs["merged_sample"]))
+merged_samples_noInputs = [str(i) for i in merged_samples_noInputs]
 all_samples = list(set(samples_table["sample"]))
-
+all_samples = [str(i) for i in all_samples]
 
 ##################################################################
 ##        set all ulitimate output files in "rule all"          ##
