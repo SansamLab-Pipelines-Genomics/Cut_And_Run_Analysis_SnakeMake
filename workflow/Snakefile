@@ -216,8 +216,8 @@ rule get_species_of_interest_reads:
     output:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     params:
-        chromosomeSizes=f"resources/chromosome_sizes/{str(config['genome_of_interest'])}.chrom.sizes",
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
+	spike_prefix=config["spike_in_chrom_prefix"],
     conda:
         "envs/samtools.yml"
     envmodules:
@@ -226,8 +226,8 @@ rule get_species_of_interest_reads:
         "results/logs/snakelogs/get_species_of_interest_reads.{sample}.log",
     shell:
         """
-        awk -F '\t' '{{ print $1,"1",$2 }}' OFS='\t' {params.chromosomeSizes} > {output.bam}tmp.bed
-        samtools view --threads {params.bowtie2_samtools_threads} -bS -ML {output.bam}tmp.bed {input.bam} > {output.bam}
+	LIST_STRING=$(samtools idxstats {input.bam} | cut -f1 | grep -v -P ^{params.spike_prefix} | grep -v -P ^EC | xargs)
+        samtools view --threads {params.bowtie2_samtools_threads} -b {input.bam} $LIST_STRING > {output.bam}
         samtools index {output.bam}
         echo "Number of species-of-interest reads:" > {log}
         samtools view --threads {params.bowtie2_samtools_threads} -c {output.bam} >> {log}
