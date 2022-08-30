@@ -271,7 +271,7 @@ def makeCtTxDict(wildcards):
 rule call_narrow_peaks_with_macs2:
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
-        control="results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[sample] + ".bam",	
+        control="results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[{sample}] + ".bam",	
     output:
         f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
     params:
