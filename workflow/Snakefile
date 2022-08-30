@@ -231,7 +231,6 @@ rule get_species_of_interest_reads:
         samtools index {output.bam}
         echo "Number of species-of-interest reads:" > {log}
         samtools view --threads {params.bowtie2_samtools_threads} -c {output.bam} >> {log}
-        rm {output.bam}tmp.bed
         """
         
 ##################################################################
