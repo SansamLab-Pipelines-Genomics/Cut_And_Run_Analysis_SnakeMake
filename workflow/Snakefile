@@ -261,11 +261,11 @@ rule call_peaks_with_sicer:
         sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
         """
 
-def makeCtTxDict(wildcards,samples_table_noInputs):
-	ControlName = samples_table_noInputs["Control"].loc[wildcards.sample]
+def makeCtTxDict(wildcard,samples_table_noInputs):
+	ControlName = samples_table_noInputs["Control"].loc[wildcard]
 	return {
 	"control": f"results/aligned_speciesOfInterest/{ControlName}.bam",
-	"treatment": f"results/aligned_speciesOfInterest/{wildcards.sample}.bam"
+	"treatment": f"results/aligned_speciesOfInterest/{wildcard}.bam"
 	}  
         
 rule call_narrow_peaks_with_macs2:
