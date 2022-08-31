@@ -36,6 +36,10 @@ all_samples = [str(i) for i in all_samples]
 # to run snakemake without explicitly requesting any output files on the command line, we must request output files in the first rule. Therefore we include this otherwise useless rule here
 rule all:
     input:
+	expand(
+	    f"results/aligned_speciesOfInterest/{{sample}}.bam",
+            sample=all_samples
+        )
         expand(
             f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed",
             sample=merged_samples_noInputs,
