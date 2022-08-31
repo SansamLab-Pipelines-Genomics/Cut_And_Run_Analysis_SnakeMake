@@ -56,6 +56,14 @@ rule all:
         "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/config.yml",
         "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/" + config["samples_csv"],
         "results/" + tmstmp + "_run_details_" + str(config["experimentName"]) + "/repo_release.txt",
+	expand(
+            f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw",
+            sample=merged_samples_noInputs
+            ),
+        expand(
+            "results/bigwigs_no_spikein/{sample}.bw",
+            sample=merged_samples_noInputs
+            )
 
 ##################################################################
 ##                       document run                           ##
