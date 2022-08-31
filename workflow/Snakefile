@@ -37,7 +37,7 @@ all_samples = [str(i) for i in all_samples]
 rule all:
     input:
         expand(
-            results/aligned_speciesOfInterest/{sample}.bam,
+            "results/aligned_speciesOfInterest/{sample}.bam",
             sample=all_samples
             ),
         expand(
