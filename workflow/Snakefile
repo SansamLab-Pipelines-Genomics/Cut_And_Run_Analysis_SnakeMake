@@ -38,7 +38,7 @@ rule all:
     input:
         expand(
             "results/aligned_speciesOfInterest/{sample}.bam",
-            sample=all_samples
+            sample=merged_samples
             ),
         expand(
             f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed",
