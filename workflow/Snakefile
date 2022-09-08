@@ -239,7 +239,7 @@ rule get_species_of_interest_reads:
         "results/logs/snakelogs/get_species_of_interest_reads.{sample}.log",
     shell:
         """
-	LIST_STRING=$(samtools idxstats {input.bam} | cut -f1 | grep -v -P ^{params.spike_prefix} | grep -v -P ^EC | grep -v {params.ste} | grep -v \* | xargs)
+	    LIST_STRING=$(samtools idxstats {input.bam} | cut -f1 | grep -v -P ^{params.spike_prefix} | grep -v -P ^EC | grep -v {params.ste} | grep -v \* | xargs)
         samtools view --threads {params.bowtie2_samtools_threads} -b {input.bam} $LIST_STRING > {output.bam}
         samtools index {output.bam}
         echo "Number of species-of-interest reads:" > {log}
