@@ -445,13 +445,10 @@ rule make_fingerprint_plots:
 
 rule calculate_alignment_and_filtering_counts:
     input:
-        #aligned_bam="results/aligned/{sample}.bam",
         filtered_bam="results/merged/{sample}.bam",
         species_bam="results/aligned_speciesOfInterest/{sample}.bam",
     output:
         "results/read_stats/{sample}.csv"
-    params:
-        goi=config["genome_of_interest"]
     conda:
         "envs/samtools.yml"
     envmodules:
@@ -459,12 +456,10 @@ rule calculate_alignment_and_filtering_counts:
     log:
     shell:
         """
-        #TOTAL_READS=$(samtools view -c {input.aligned_bam})
         FILTERED_READS=$(samtools view -c {input.filtered_bam})
         SPECIES_READS=$(samtools view -c {input.species_bam})
-        #echo "total read count, ${{TOTAL_READS}}" > {output}_tmp
         echo "filtered read count, ${{FILTERED_READS}}" >> {output}_tmp
-        echo "{params.goi} read count, ${{FILTERED_READS}}" >> {output}_tmp
+        echo "goi read count, ${{SPECIES_READS}}" >> {output}_tmp
         mv {output}_tmp {output}
         """
 
