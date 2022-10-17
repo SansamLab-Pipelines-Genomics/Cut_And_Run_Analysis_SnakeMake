@@ -3,5 +3,5 @@ testSample1,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.f
 testInput1,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA,testInput
 testSample2,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.fastq.gz,treatment,testInput,testSample
 testInput2,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA,testInput
-otherTestSample,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.fastq.gz,treatment,testInput,NA
-otherTestInput,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA,NA
+otherTestSample,resources/test_S7_R1_001_sub.fastq.gz,resources/test_S7_R2_001_sub.fastq.gz,treatment,otherTestInput,otherTestSample
+otherTestInput,resources/test_S7_R1_001_sub_copy.fastq.gz,resources/test_S7_R2_001_sub_copy.fastq.gz,control,NA,otherTestInput

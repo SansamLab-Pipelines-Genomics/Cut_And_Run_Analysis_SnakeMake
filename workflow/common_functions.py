@@ -5,6 +5,14 @@
 import pandas as pd
 import re
 
+def bamFilenames_from_mergedSamples(wildcard,samples_table):
+  df = samples_table.set_index("merged_sample")
+  df2 = df.loc[wildcard, "sample"]
+  if isinstance(df2, str):
+    return "results/aligned_and_filtered/" + df2 + ".bam"
+  else:
+    return ' '.join(["results/aligned_and_filtered/" + str(s) + ".bam" for s in list(df2)])
+
 # this makes a sample table with "_merged" appended to the end of each merged sample name in the "merged_sample" and "Control" columns
 def add_merge_suffix_to_merged_samples(samples_df):
   df=samples_df
