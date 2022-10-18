@@ -57,9 +57,6 @@ rule all:
             sample=merged_samples
             ),
         #"results/Report.html",
-        "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/config.yml",
-        "results/" + tmstmp + "_run_details_" + config["experimentName"] + "/" + config["samples_csv"],
-        "results/" + tmstmp + "_run_details_" + str(config["experimentName"]) + "/repo_release.txt",
         expand(
             f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw",
             sample=merged_samples_noInputs
@@ -68,31 +65,6 @@ rule all:
             "results/bigwigs_no_spikein/{sample}.bw",
             sample=merged_samples_noInputs
             )
-
-##################################################################
-##                       document run                           ##
-##################################################################
-
-# copy config and samples files to a directory
-rule copy_config_files:
-    output:
-        "results/" + tmstmp + "_run_details_{sample}/config.yml",
-        "results/" + tmstmp + "_run_details_{sample}/" + config["samples_csv"]
-    params:
-        config["samples_csv"]
-    run:
-        shutil.copyfile('config/config.yml', output[0])
-        shutil.copyfile(params[0], output[1])
-
-
-# write the current repo release to a file
-rule write_repo_release:
-    output:
-        "results/" + tmstmp + "_run_details_{sample}/repo_release.txt"
-    shell:
-        """
-        git describe --tag > {output}
-        """        
         
 ##################################################################
 ##                         trim reads                           ##
