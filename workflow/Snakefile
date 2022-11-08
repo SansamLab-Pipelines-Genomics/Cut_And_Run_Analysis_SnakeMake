@@ -56,7 +56,7 @@ rule all:
             "results/merged/{sample}.bam",
             sample=merged_samples
             ),
-        #"results/Report.html",
+        "results/Report.html",
         expand(
             f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw",
             sample=merged_samples_noInputs
@@ -228,7 +228,7 @@ def makeCtTxDict(smp):
 rule call_peaks_with_sicer:
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
-	control=lambda wildcards: makeCtTxDict(wildcards.sample)
+	control=lambda wildcards: set(makeCtTxDict(wildcards.sample))
     output:
         f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed",
     params:
