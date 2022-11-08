@@ -223,7 +223,11 @@ rule get_species_of_interest_reads:
 ##################################################################
 
 def makeCtTxDict(smp):
-	return "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[str(smp)] + ".bam"
+    control="results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[str(smp)] + ".bam"
+    if type(control) is str:
+        return control
+    else:
+        return set(control)
 
 rule call_peaks_with_sicer:
     input:
