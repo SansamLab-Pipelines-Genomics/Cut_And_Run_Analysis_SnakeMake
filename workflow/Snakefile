@@ -307,6 +307,7 @@ rule make_bigwigs_no_spikein:
     params:
         gs=config["effective_genome_size"],
         bs=config["bamCoverage_binSize"],
+	sl=config["bamCoverage_smoothLength"],
         bl=config["blacklist_file"],
     conda:
         "envs/deeptools.yml"
@@ -317,7 +318,7 @@ rule make_bigwigs_no_spikein:
     shell:
         """
         bamCoverage --version > {log}
-        bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads
+        bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --smoothLength {params.sl} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads
         """
 
 
@@ -356,6 +357,7 @@ rule make_bigwigs_with_spikein:
     params:
         gs=config["effective_genome_size"],
         bs=config["bamCoverage_binSize"],
+	sl=config["bamCoverage_smoothLength"],
         bl=config["blacklist_file"],
         px=config["spike_in_chrom_prefix"],
     conda:
@@ -368,7 +370,7 @@ rule make_bigwigs_with_spikein:
         """
         bamCoverage --version > {log}
         scale_factor=$(grep scale {input.scale} | sed 's/scale factor = //g')
-        bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
+        bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --smoothLength {params.sl} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
         """
 
 	
