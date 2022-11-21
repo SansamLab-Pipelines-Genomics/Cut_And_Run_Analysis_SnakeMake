@@ -37,6 +37,7 @@ macs2_minimum_FDR_cutoff: 0.05
 macs2_broad_minimum_FDR_cutoff: 0.1
 # bamCoverage options
 bamCoverage_binSize: 100
+bamCoverage_smoothLength: 0
 #################################################################
 ##                     Environment Modules                     ##
 #################################################################
