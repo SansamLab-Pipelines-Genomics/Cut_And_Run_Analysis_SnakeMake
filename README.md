@@ -295,13 +295,13 @@ You must enter paths to the following:
 #### 5B.  Modify the config/samples.csv file
 Note. Make sure to rename sample file by removing "_template"
 
-The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 4 is the sample type (either "treatment" or "control"). Column 5 is the name of the corresponding Control sample for each treated sample (use "NA" if the sample is a control). In the example below, the two treated samples share the same control but it is possible to include multple controls if that fits your experimental design.
+The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 4 is the sample type (either "treatment" or "control"). Column 5 is the name of the corresponding Control sample for each treated sample (use "NA" if the sample is a control). Finally, in the last column put the same sample name you used in the first column to label your sample. This last column is only used when the same sample has more reads in another fastq. In that case you use the sample name to indicate which reads to merge. In the example below, the two treated samples share the same control but, it is possible to include multple controls if that fits your experimental design.
 
 | sample      | fastq1              | fastq2              | sampleType | Control   | merged_sample |
 |-------------|---------------------|---------------------|------------|-----------|---------------|
-| testSample  | sample_R1.fastq.gz  | sample_R2.fastq.gz  | treatment  | testInput | NA            |
-| testSample2 | sample2_R1.fastq.gz | sample2_R2.fastq.gz | treatment  | testInput | NA            |
-| testInput   | input_R1.fastq.gz   | input_R2.fastq.gz   | control    | NA        | NA            |
+| testSample  | sample_R1.fastq.gz  | sample_R2.fastq.gz  | treatment  | testInput | testSample    |
+| testSample2 | sample2_R1.fastq.gz | sample2_R2.fastq.gz | treatment  | testInput | testSample2   |
+| testInput   | input_R1.fastq.gz   | input_R2.fastq.gz   | control    | NA        | testInput     |
 
 #### 5C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file
 
@@ -401,13 +401,13 @@ You must enter paths to the following:
 #### 4B.  Modify the config/samples.csv file
 Note. Make sure to rename sample file by removing "_template"
 
-The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 4 is the sample type (either "treatment" or "control"). Column 5 is the name of the corresponding Control sample for each treated sample (use "NA" if the sample is a control). In the example below, the two treated samples share the same control but it is possible to include multple controls if that fits your experimental design.
+The samples.csv file in the config folder has paths to the test fastq files. You must replace those paths with those for your own fastq files. The first column of each row is the sample name. This name will be used for all output files. Columns 2 and 3 are the paths to the paired fastq files. Column 4 is the sample type (either "treatment" or "control"). Column 5 is the name of the corresponding Control sample for each treated sample (use "NA" if the sample is a control). Finally, in the last column put the same sample name you used in the first column to label your sample. This last column is only used when the same sample has more reads in another fastq. In that case you use the sample name to indicate which reads to merge. In the example below, the two treated samples share the same control but, it is possible to include multple controls if that fits your experimental design.
 
 | sample      | fastq1              | fastq2              | sampleType | Control   | merged_sample |
 |-------------|---------------------|---------------------|------------|-----------|---------------|
-| testSample  | sample_R1.fastq.gz  | sample_R2.fastq.gz  | treatment  | testInput | NA            |
-| testSample2 | sample2_R1.fastq.gz | sample2_R2.fastq.gz | treatment  | testInput | NA            |
-| testInput   | input_R1.fastq.gz   | input_R2.fastq.gz   | control    | NA        | NA            |
+| testSample  | sample_R1.fastq.gz  | sample_R2.fastq.gz  | treatment  | testInput | testSample    |
+| testSample2 | sample2_R1.fastq.gz | sample2_R2.fastq.gz | treatment  | testInput | testSample2   |
+| testInput   | input_R1.fastq.gz   | input_R2.fastq.gz   | control    | NA        | testInput     |
 
 #### 4C.  IF SLURM RESOURCE CHANGES ARE NEEDED. Modify the config/cluster_config.yml file
 
