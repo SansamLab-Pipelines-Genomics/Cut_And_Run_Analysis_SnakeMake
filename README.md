@@ -78,12 +78,8 @@ SAMPLE="YOURSAMPLENAMEHERE" `#for the following paired fastq files:  \
 
 trimmomatic PE \
     -threads $THREADS \
-    ${SAMPLE}_R1_001.fastq.gz              `# input forward reads`\
-    ${SAMPLE}_R2_001.fastq.gz              `# input reverse reads`\
-    ${SAMPLE}_R1_trimmed.fastq.gz          `# output trimmed forward reads`\
-    ${SAMPLE}_R1_trimmed_orphaned.fastq.gz `# output forward reads that lack corresponding reverse read`\
-    ${SAMPLE}_R2_trimmed.fastq.gz          `# output trimmed reverse reads`\
-    ${SAMPLE}_R2_trimmed_orphaned.fastq.gz `# ouptut reverse reads that lack corresponding forward reads`\
+    -basein ${SAMPLE}_R1_001.fastq.gz        `# input read 1 filename (because of -basein, it will also use read 2) `\
+    -baseout ${SAMPLE}_trimmed.fastq.gz      `# base output name for trimmed reads (1P = paired read 1, 1U = unpaired read 1, etc)`\
     ILLUMINACLIP:$ADAPTER_FILE:2:15:4:4:true `# Trim using designated adapter file`\
                                              `# For "2:15:4:4:true":`\
                                              `#      2 is allowed mismatches`\
