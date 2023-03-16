@@ -64,7 +64,12 @@ rule all:
         expand(
             "results/bigwigs_no_spikein/{sample}.bw",
             sample=merged_samples_noInputs
-            )
+            ),
+	expand(
+	    f"results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw", 
+	    sample = set(samples_lst)),
+	    "results/mergedBackgroundNormalizedBigwigs/" + str(config["experimentName"]) + "_bkgrndNorm.bw"
+	    )
         
 ##################################################################
 ##                         trim reads                           ##
@@ -374,6 +379,34 @@ rule make_bigwigs_with_spikein:
         """
 
 	
+# make normalized bigwigs using bamcompare (KB)
+rule make_normalized_bigwigs_with_bamcompare:
+    input:
+        tx_merged_bam = "results/aligned_speciesOfInterest/{sample}.bam",
+        in_merged_bam = "lambda wildcards: makeCtTxDict(wildcards.sample)",
+        bln="results/greyAndBlackLists/" + str(config["experimentName"]) + "_greyAndBlacklist.bed",
+    output:
+        "results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw",
+    params:
+        sfm=config["scaleFactorsMethod"],
+        nmu=config["normalizeUsing"],
+        bco=config["bamcompareOperation"],
+        bns=config["binSize"],
+        egs=config["effective_genome_size"],
+        nop=config["numberOfProcessors"],
+        mfl=config["minFragmentLength"],
+        mxl=config["maxFragmentLength"],
+        mmq=config["minMappingQuality"],
+        sml=config["smoothLength"],
+        ign=config["ignoreForNormalization"],
+    envmodules:
+        config["deeptools"],
+    shell:
+        """
+        bamCompare --smoothLength {params.sml} --minFragmentLength {params.mfl} --ignoreForNormalization {params.ign} --maxFragmentLength {params.mxl} --minMappingQuality {params.mmq} --numberOfProcessors {params.nop} --effectiveGenomeSize {params.egs} --scaleFactorsMethod {params.sfm} --normalizeUsing {params.nmu} --operation {params.bco} --binSize {params.bns} --blackListFileName {input.bln} --centerReads --numberOfProcessors {params.nop} -b1 {input.tx_merged_bam} -b2 {input.in_merged_bam} -o {output}
+        """
+
+
 ##################################################################
 ##                              QC                              ##
 ##################################################################
