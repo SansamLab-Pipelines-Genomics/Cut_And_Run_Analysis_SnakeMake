@@ -35,9 +35,6 @@ sicer_gapSize: 600
 macs2_minimum_FDR_cutoff: 0.05
 # macs2 "broad" options
 macs2_broad_minimum_FDR_cutoff: 0.1
-# bamCoverage options
-bamCoverage_binSize: 100
-bamCoverage_smoothLength: 0
 # options for background normalizing or subtracting with bamcompare
 ## choose from "readCount", "SES", or "None"
 scaleFactorsMethod: "None"
@@ -48,9 +45,15 @@ bamcompareOperation: "log2"
 ## chromosomes to ignore during normalization with bam compare
 ignoreForNormalization: "chrX chrM chrY"
 ## choose an integer for bp
-binSize: 50
+binSize: 100
 ## smooth length
-smoothLength: 150
+smoothLength: 0
+## read processing options; all integers
+minFragmentLength: 50
+maxFragmentLength: 1000
+minMappingQuality: 20
+## number of processors
+numberOfProcessors: 8
 #################################################################
 ##                     Environment Modules                     ##
 #################################################################
