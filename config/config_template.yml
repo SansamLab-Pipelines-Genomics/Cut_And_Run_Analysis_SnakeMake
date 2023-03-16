@@ -51,6 +51,8 @@ ignoreForNormalization: "chrX chrM chrY"
 binSize: 50
 ## smooth length
 smoothLength: 150
+## number of processors for deeptools bamcompare
+numberOfProcessors: 8
 #################################################################
 ##                     Environment Modules                     ##
 #################################################################
