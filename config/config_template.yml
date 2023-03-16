@@ -38,6 +38,19 @@ macs2_broad_minimum_FDR_cutoff: 0.1
 # bamCoverage options
 bamCoverage_binSize: 100
 bamCoverage_smoothLength: 0
+# options for background normalizing or subtracting with bamcompare
+## choose from "readCount", "SES", or "None"
+scaleFactorsMethod: "None"
+## choose from "RPKM", "CPM", "BPM", "None"
+normalizeUsing: "CPM"
+## choose from "log2", "ratio", "subtract", "add", "mean", "reciprocal_ratio", "first", "second"
+bamcompareOperation: "log2"
+## chromosomes to ignore during normalization with bam compare
+ignoreForNormalization: "chrX chrM chrY"
+## choose an integer for bp
+binSize: 50
+## smooth length
+smoothLength: 150
 #################################################################
 ##                     Environment Modules                     ##
 #################################################################
