@@ -67,8 +67,7 @@ rule all:
             ),
 	expand(
 	    f"results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw", 
-	    sample = set(samples_lst)),
-	    "results/mergedBackgroundNormalizedBigwigs/" + str(config["experimentName"]) + "_bkgrndNorm.bw"
+	    sample=merged_samples_noInputs
 	    )
         
 ##################################################################
