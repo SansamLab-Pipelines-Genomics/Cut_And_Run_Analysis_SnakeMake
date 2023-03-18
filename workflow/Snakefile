@@ -111,7 +111,8 @@ rule trim_reads_with_trimmomatic:
         "envs/trim_reads_with_trimmomatic.yml"
     envmodules:
         # Trimmomatic environment module from the config file
-        config["trimmomatic"]
+        config["trimmomatic"],
+        config["fastqc"]
     log:
         # Log file for trim_reads_with_trimmomatic rule
         "results/logs/snakelogs/trim_reads_with_trimmomatic.{sample}.log",
@@ -147,7 +148,8 @@ rule trim_reads_with_cutadapt:
         "envs/trim_reads_with_cutadapt.yml"
     envmodules:
         # Cutadapt environment module from the config file
-        config["cutadapt"]
+        config["cutadapt"],
+        confit["fastqc"]
     log:
         # Log file for trim_reads_with_cutadapt rule
         "results/logs/snakelogs/trim_reads_with_cutadapt.{sample}.log",
@@ -169,29 +171,39 @@ rule trim_reads_with_cutadapt:
 ##                        align reads                           ##
 ##################################################################
 
+# This rule defines the alignment step using bowtie2 in a Snakemake workflow
 rule align_reads_with_bowtie2:
     input:
+        # Input trimmed read files (R1 and R2)
         R1="results/trimmed/{sample}_trimmed_R1.fastq.gz",
         R2="results/trimmed/{sample}_trimmed_R2.fastq.gz",
     params:
+        # Parameters for bowtie2 and samtools
         bowtie2_genome=config["bowtie2_genome"],
         bowtie2_threads=config["bowtie2_threads"],
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
     output:
+        # Output BAM file and its index
         bam="results/aligned/{sample}.bam",
         bai="results/aligned/{sample}.bam.bai",
     wildcard_constraints:
+        # Exclude samples with '_merged' in their names
         sample="((?!_merged).)*",
     conda:
+        # Conda environment with required software dependencies
         "envs/align_reads_with_bowtie2.yml"
     envmodules:
+        # Load necessary environment modules
         config["bowtie2"],
         config["samtools"],
     log:
+        # Log file for the alignment step
         "results/logs/snakelogs/align_reads_with_bowtie2.{sample}.log",
     shell:
         """
+        # Run bowtie2 for paired-end read alignment and pipe the output to samtools for BAM conversion and sorting
         bowtie2 --met-file {log} --threads {params.bowtie2_threads} --dovetail --phred33 --maxins 2000 -x {params.bowtie2_genome} -1 {input.R1} -2 {input.R2} | samtools view -b - | samtools sort --threads {params.bowtie2_samtools_threads} - -o {output.bam}
+        # Index the output BAM file
         samtools index {output.bam}
         """
 
@@ -199,22 +211,30 @@ rule align_reads_with_bowtie2:
 ##                    filter and merge bams                     ##
 ##################################################################
 
+# This rule defines the quality filtering step in a Snakemake workflow using samtools
 rule quality_filter_aligned_reads:
     input:
+        # Input BAM file from the alignment step
         bam="results/aligned/{sample}.bam",
     output:
+        # Output quality-filtered BAM file and its index
         bam="results/aligned_and_filtered/{sample}.bam",
         bai="results/aligned_and_filtered/{sample}.bam.bai"
     params:
+        # Parameters for samtools
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
         flag=config["samtools_filter_flag"],
     conda:
+        # Conda environment with required software dependencies
         "envs/samtools.yml"
     envmodules:
+        # Load necessary environment modules
         config["samtools"]
     shell:
         """
+        # Filter the aligned reads based on mapping quality and flags using samtools
         samtools view -h --threads {params.bowtie2_samtools_threads} -b -q 10 -F {params.flag} {input.bam} > {output.bam}
+        # Index the output filtered BAM file
         samtools index {output.bam}
         """
 
@@ -246,81 +266,119 @@ rule merge_replicates:
             # If there are spaces, merge the input BAM files using samtools
             samtools merge -@ {params.bowtie2_samtools_threads} {output.bam} {params.bams}
         fi
-
         """
 
+# This rule defines the extraction of reads corresponding to the species of interest in a Snakemake workflow using samtools
 rule get_species_of_interest_reads:
     input:
+        # Input BAM file containing reads from multiple species
         bam="results/merged/{sample}.bam",
     output:
+        # Output BAM file containing only the reads from the species of interest
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     params:
+        # Parameters for samtools and filtering
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
         spike_prefix=config["spike_in_chrom_prefix"],
         ste=config["chromosome_strings_to_exclude"]
     conda:
+        # Conda environment with required software dependencies
         "envs/samtools.yml"
     envmodules:
+        # Load necessary environment modules
         config["samtools"]
     log:
+        # Log file to store the number of species-of-interest reads
         "results/logs/snakelogs/get_species_of_interest_reads.{sample}.log",
     shell:
         """
+        # Generate a list of chromosomes from the input BAM file, excluding spike-ins and unwanted chromosome strings
         LIST_STRING=$(samtools idxstats {input.bam} | cut -f1 | grep -v -P ^{params.spike_prefix} | grep -v -P ^EC | grep -v '{params.ste}' | grep -v \* | xargs)
+        
+        # Filter the input BAM file to keep only the reads from the species of interest
         samtools view --threads {params.bowtie2_samtools_threads} -b {input.bam} $LIST_STRING > {output.bam}
+        
+        # Index the output BAM file
         samtools index {output.bam}
+        
+        # Write the number of species-of-interest reads to the log file
         echo "Number of species-of-interest reads:" > {log}
         samtools view --threads {params.bowtie2_samtools_threads} -c {output.bam} >> {log}
         """
+
 
 ##################################################################
 ##                          call peaks                          ##
 ##################################################################
 
+# This function is used to create a dictionary for control samples
 def makeCtTxDict(smp):
-    control="results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[str(smp)] + ".bam"
+    # Get the control sample associated with the given sample, using the samples_table_noInputs DataFrame
+    control = "results/aligned_speciesOfInterest/" + samples_table_noInputs["Control"].loc[str(smp)] + ".bam"
+    
+    # Check if the control variable is a string (single control sample)
     if type(control) is str:
+        # If yes, return the control sample as a string
         return control
     else:
+        # If not, convert the control sample(s) to a set and return
         return set(control)
 
+
+# This rule calls peaks using the SICER peak caller in a Snakemake workflow
 rule call_peaks_with_sicer:
+    # Input files include the treatment sample and its associated control sample(s)
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
         control=lambda wildcards: makeCtTxDict(wildcards.sample)
+    # Output file is the resulting peak-calling file in BED format
     output:
         f"results/sicer/{{sample}}-W{str(config['sicer_windowSize'])}-G{str(config['sicer_gapSize'])}-FDR{str(config['sicer_fdr'])}-island.bed",
+    # Parameters for the SICER peak caller
     params:
         sicer_genome=config["sicer_genome"],
         sicer_windowSize=config["sicer_windowSize"],
         sicer_fragmentSize=config["sicer_fragmentSize"],
         sicer_fdr=config["sicer_fdr"],
         sicer_gapSize=config["sicer_gapSize"],
+    # Conda environment for SICER
     conda:
         "envs/sicer2.yml"
+    # Environment modules for SICER
     envmodules:
         config["sicer2"]
+    # Shell command to call peaks using the SICER peak caller with the specified parameters
     shell:
         """
         sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
         """
 
+# These rules call narrow and broad peaks using MACS2 peak caller in a Snakemake workflow
+
+# This rule calls narrow peaks using the MACS2 peak caller
 rule call_narrow_peaks_with_macs2:
+    # Input files include the treatment sample and its associated control sample(s)
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
         control=lambda wildcards: makeCtTxDict(wildcards.sample)
+    # Output file is the resulting narrow peak-calling file in narrowPeak format
     output:
         f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
+    # Parameters for the MACS2 peak caller
     params:
         effective_genome_size=config["effective_genome_size"],
         minimum_FDR_cutoff=str(config["macs2_minimum_FDR_cutoff"]),
         sample_name="{sample}",
+    # Conda environment for MACS2
     conda:
         "envs/callPeaks.yml"
+    # Environment modules for MACS2
     envmodules:
         config["macs2"]
+    # Log file for the MACS2 narrow peak calling
     log:
         f"results/logs/snakelogs/call_narrow_peaks_with_macs2.{{sample}}_q{str(config['macs2_minimum_FDR_cutoff'])}.log",
+    # Shell command to call narrow peaks using the MACS2 peak caller with the specified parameters
     shell:
         """
         macs2 --version > {log}
