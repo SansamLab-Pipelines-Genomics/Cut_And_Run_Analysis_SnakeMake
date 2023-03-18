@@ -94,7 +94,7 @@ rule fastqc:
         zip1="fastqc_results/{sample}_1_fastqc.zip",
         zip2="fastqc_results/{sample}_2_fastqc.zip"
     params:
-        threads=config["threads"]
+        threads=config["fastqc_threads"]
     envmodules:
         config["fastqc"]
     log:
