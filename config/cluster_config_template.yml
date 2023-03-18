@@ -7,6 +7,14 @@ __default__:
     mem: 16G
     output: results/logs/slurm-%x.%A.%a.log
 
+fastqc:
+    cpus-per-task: 8
+    mem: 64G
+    cores: 8
+    name: "{rule}.{wildcards.sample}"
+    output: results/logs/{rule}.{wildcards.sample}.log
+    error: results/logs/{rule}.{wildcards.sample}.err
+
 trim_reads_with_trimmomatic:
     cpus-per-task: 8
     mem: 64G
@@ -30,7 +38,7 @@ align_reads_with_bowtie2:
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
     error: results/logs/{rule}.{wildcards.sample}.err
-    
+
 merge_replicates:
     cpus-per-task: 12
     mem: 96G
@@ -55,7 +63,7 @@ call_narrow_peaks_with_macs2:
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
     error: results/logs/{rule}.{wildcards.sample}.err
-    
+
 call_broad_peaks_with_macs2:
     cpus-per-task: 2
     mem: 16G
@@ -71,7 +79,7 @@ make_bigwigs_no_spikein:
     name: "{rule}.{wildcards.sample}"
     output: results/logs/{rule}.{wildcards.sample}.log
     error: results/logs/{rule}.{wildcards.sample}.err
-    
+
 make_bigwigs_with_spikein:
     cpus-per-task: 8
     mem: 16G
