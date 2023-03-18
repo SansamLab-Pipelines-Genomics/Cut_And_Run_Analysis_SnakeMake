@@ -123,8 +123,8 @@ rule fastqc:
 rule fastqc_after_trimming:
     input:
         # Input trimmed fastq files from the previous trimming step
-        trimmed1=temp("results/trimmed/{sample}_trimmed_R1.fastq.gz"),
-        trimmed2=temp("results/trimmed/{sample}_trimmed_R2.fastq.gz"),
+        trimmed1="results/trimmed/{sample}_trimmed_R1.fastq.gz",
+        trimmed2="results/trimmed/{sample}_trimmed_R2.fastq.gz",
     output:
         # Output HTML and ZIP files for the FastQC results after trimming
         html1="results/fastqc_results_after_trimming/{sample}_1_fastqc.html",
