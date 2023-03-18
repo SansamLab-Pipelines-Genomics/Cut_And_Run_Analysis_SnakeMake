@@ -149,7 +149,7 @@ rule trim_reads_with_cutadapt:
     envmodules:
         # Cutadapt environment module from the config file
         config["cutadapt"],
-        confit["fastqc"]
+        config["fastqc"]
     log:
         # Log file for trim_reads_with_cutadapt rule
         "results/logs/snakelogs/trim_reads_with_cutadapt.{sample}.log",
