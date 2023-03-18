@@ -116,7 +116,7 @@ rule fastqc:
         "logs/fastqc/{sample}.log"
     shell:
         # FastQC command to run on the input files with the specified parameters
-        "fastqc -t {params.threads} -o fastqc_results/ {input.fq1} {input.fq2} 2> {log}"
+        "fastqc -t {params.threads} -o results/fastqc_results/ {input.fq1} {input.fq2} 2> {log}"
 
 
 # Rule 'fastqc_after_trimming' runs FastQC on the trimmed reads
@@ -142,7 +142,7 @@ rule fastqc_after_trimming:
         "logs/fastqc/{sample}.log"
     shell:
         # FastQC command to run on the input trimmed files with the specified parameters
-        "fastqc -t {params.threads} -o fastqc_results/ {input.fq1} {input.fq2} 2> {log}"
+        "fastqc -t {params.threads} -o results/fastqc_results/ {input.fq1} {input.fq2} 2> {log}"
 
 
 ##################################################################
