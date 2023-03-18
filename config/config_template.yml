@@ -73,7 +73,7 @@ minMappingQuality: 20              # Minimum mapping quality for deeptools bamco
 #################################################################
 # These will be specific to your cluster                        #
 #################################################################
-fastqc_threads: "fastqc/0.11.9"
+fastqc: "fastqc/0.11.9"
 trimmomatic: "trimmomatic/0.35"
 cutadapt: "cutadapt/3.7"
 bowtie2: "bowtie2/2.3.1"
