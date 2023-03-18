@@ -475,28 +475,7 @@ Anaconda Software Distribution. (2020). Anaconda Documentation. Anaconda Inc. Re
 
 ## License
 
-
-
-
-
-
-This README.md is a work in progress!
-
-TODO:
-
-Get config from a tab-delimited file, which can be read using parallel --colsep='\t' (or comma-delimited).
-
-QUESTIONS:
-
-Do we need a blacklist for spike-ins?
-Should we include .bed files for chromosome sizes for human, mouse, and zebrafish UCSC genomes?
-
-
-NEEDED:
-
 Provenance for blacklist file(s)
 
 Amemiya, H.M., Kundaje, A. & Boyle, A.P. The ENCODE Blacklist: Identification of Problematic Regions of the Genome. Sci Rep 9, 9354 (2019). https://doi.org/10.1038/s41598-019-45839-z
     https://github.com/Boyle-Lab/Blacklist/blob/master/lists/hg19-blacklist.v2.bed.gz
-
-Provenance for human-drosophila merged genome files which we (Nic and/or Christopher) created it (i.e. where is(are) our build script(s)?).
