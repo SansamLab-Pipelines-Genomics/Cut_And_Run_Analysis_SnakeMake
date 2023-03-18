@@ -37,10 +37,14 @@ all_samples = [str(i) for i in all_samples]
 rule all:
     input:
         expand(
-            "fastqc_results/{sample}_1_fastqc.html",
+            "results/fastqc_results/{sample}_1_fastqc.html",
             sample=all_samples
             ),
-	expand(
+        expand(
+            "results/fastqc_results_after_trimming/{sample}_1_fastqc.html",
+            sample=all_samples
+            ),
+	    expand(
             "results/aligned_speciesOfInterest/{sample}.bam",
             sample=merged_samples
             ),
@@ -69,13 +73,12 @@ rule all:
             "results/bigwigs_no_spikein/{sample}.bw",
             sample=merged_samples_noInputs
             ),
-	expand(
-	    f"results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw", 
-	    sample=merged_samples_noInputs,
-	    "results/mergedBackgroundNormalizedBigwigs/" + str(config["experimentName"]) + "_bkgrndNorm.bw"
-	    )
+	    expand(
+	        f"results/backgroundNormalizedBigwigs/{{sample}}_bkgrndNorm.bw",
+	        sample=merged_samples_noInputs,
+	        )
 
-	
+
 ##################################################################
 ##                         run fastqc                           ##
 ##################################################################
@@ -89,10 +92,10 @@ rule fastqc:
             }
         )
     output:
-        html1="fastqc_results/{sample}_1_fastqc.html",
-        html2="fastqc_results/{sample}_2_fastqc.html",
-        zip1="fastqc_results/{sample}_1_fastqc.zip",
-        zip2="fastqc_results/{sample}_2_fastqc.zip"
+        html1="results/fastqc_results/{sample}_1_fastqc.html",
+        html2="results/fastqc_results/{sample}_2_fastqc.html",
+        zip1="results/fastqc_results/{sample}_1_fastqc.zip",
+        zip2="results/fastqc_results/{sample}_2_fastqc.zip"
     params:
         threads=config["fastqc_threads"]
     envmodules:
@@ -102,11 +105,28 @@ rule fastqc:
     shell:
         "fastqc -t {params.threads} -o fastqc_results/ {input.fq1} {input.fq2} 2> {log}"
 
+rule fastqc_after_trimming:
+    input:
+        trimmed1=temp("results/trimmed/{sample}_trimmed_R1.fastq.gz"),
+        trimmed2=temp("results/trimmed/{sample}_trimmed_R2.fastq.gz"),
+    output:
+        html1="results/fastqc_results_after_trimming/{sample}_1_fastqc.html",
+        html2="results/fastqc_results_after_trimming/{sample}_2_fastqc.html",
+        zip1="results/fastqc_results_after_trimming/{sample}_1_fastqc.zip",
+        zip2="results/fastqc_results_after_trimming/{sample}_2_fastqc.zip"
+    params:
+        threads=config["fastqc_threads"]
+    envmodules:
+        config["fastqc"]
+    log:
+        "logs/fastqc/{sample}.log"
+    shell:
+        "fastqc -t {params.threads} -o fastqc_results/ {input.fq1} {input.fq2} 2> {log}"
 
 ##################################################################
 ##                         trim reads                           ##
 ##################################################################
-        
+
 rule trim_reads_with_trimmomatic:
     input:
         unpack(
@@ -133,7 +153,7 @@ rule trim_reads_with_trimmomatic:
         """
         trimmomatic PE -threads {params.trimmomatic_threads} {input.fq1} {input.fq2} {output.trimmed1} {output.orphaned1} {output.trimmed2} {output.orphaned2} ILLUMINACLIP:{params.trimmomatic_adapterfile}:2:15:4:4:true LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:25
         """
-        
+
 rule trim_reads_with_cutadapt:
     input:
         R1="results/trimmed/{sample}_trimmomatic_R1.fastq.gz",
@@ -153,11 +173,11 @@ rule trim_reads_with_cutadapt:
         """
         cutadapt --json {log} --cores=0 -a file:{params.cutadapt_adapterfile} -A file:{params.cutadapt_adapterfile} -a G{{100}} -A G{{100}} --minimum-length 25 --quality-cutoff 20,20 -e 0.2 --output {output.trimmed1} --paired-output {output.trimmed2} {input.R1} {input.R2}
         """
-        
+
 ##################################################################
 ##                        align reads                           ##
 ##################################################################
-        
+
 rule align_reads_with_bowtie2:
     input:
         R1="results/trimmed/{sample}_trimmed_R1.fastq.gz",
@@ -183,11 +203,11 @@ rule align_reads_with_bowtie2:
         bowtie2 --met-file {log} --threads {params.bowtie2_threads} --dovetail --phred33 --maxins 2000 -x {params.bowtie2_genome} -1 {input.R1} -2 {input.R2} | samtools view -b - | samtools sort --threads {params.bowtie2_samtools_threads} - -o {output.bam}
         samtools index {output.bam}
         """
-        
+
 ##################################################################
 ##                    filter and merge bams                     ##
 ##################################################################
-             
+
 rule quality_filter_aligned_reads:
     input:
         bam="results/aligned/{sample}.bam",
@@ -206,7 +226,7 @@ rule quality_filter_aligned_reads:
         samtools view -h --threads {params.bowtie2_samtools_threads} -b -q 10 -F {params.flag} {input.bam} > {output.bam}
         samtools index {output.bam}
         """
-    
+
 rule merge_replicates:
     input:
         expand(
@@ -223,14 +243,14 @@ rule merge_replicates:
     output:
         bam="results/merged/{sample}.bam",
         bai="results/merged/{sample}.bam.bai",
-    envmodules: 
+    envmodules:
         config["samtools"],
     shell:
         """
         samtools merge -@ {params.bowtie2_samtools_threads} {output.bam} {params.bams}
         samtools index -@ {params.bowtie2_samtools_threads} {output.bam}
         """
-        
+
 rule get_species_of_interest_reads:
     input:
         bam="results/merged/{sample}.bam",
@@ -254,7 +274,7 @@ rule get_species_of_interest_reads:
         echo "Number of species-of-interest reads:" > {log}
         samtools view --threads {params.bowtie2_samtools_threads} -c {output.bam} >> {log}
         """
-        
+
 ##################################################################
 ##                          call peaks                          ##
 ##################################################################
@@ -286,11 +306,11 @@ rule call_peaks_with_sicer:
         """
         sicer -t {input.treatment} -c {input.control} -s {params.sicer_genome} -w {params.sicer_windowSize} -f {params.sicer_fragmentSize} -fdr {params.sicer_fdr} -o results/sicer/ -g {params.sicer_gapSize} -cpu 12
         """
-        
+
 rule call_narrow_peaks_with_macs2:
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
-	control=lambda wildcards: makeCtTxDict(wildcards.sample)
+	    control=lambda wildcards: makeCtTxDict(wildcards.sample)
     output:
         f"results/macs2_normalPeaks/{{sample}}_{str(config['macs2_minimum_FDR_cutoff'])}_peaks.narrowPeak",
     params:
@@ -312,7 +332,7 @@ rule call_narrow_peaks_with_macs2:
 rule call_broad_peaks_with_macs2:
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
-	control=lambda wildcards: makeCtTxDict(wildcards.sample)
+	    control=lambda wildcards: makeCtTxDict(wildcards.sample)
     output:
         f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak",
     params:
@@ -332,10 +352,10 @@ rule call_broad_peaks_with_macs2:
         macs2 --version > {log}
         macs2 callpeak -t {input.treatment} -c {input.control} -f BAMPE -g {params.effective_genome_size} -n {params.sample_name}_{params.minimum_FDR_cutoff} -q {params.minimum_FDR_cutoff} --broad --outdir results/macs2_broadPeaks/
         """
-	
+
 ##################################################################
 ##                        Make Bigwigs                          ##
-##################################################################        
+##################################################################
 rule make_bigwigs_no_spikein:
     input:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
@@ -410,12 +430,12 @@ rule make_bigwigs_with_spikein:
         bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --smoothLength {params.sl} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
         """
 
-	
+
 # make normalized bigwigs using bamcompare (KB)
 rule make_normalized_bigwigs_with_bamcompare:
     input:
         tx_merged_bam = "results/aligned_speciesOfInterest/{sample}.bam",
-        in_merged_bam = "lambda wildcards: makeCtTxDict(wildcards.sample)",
+        in_merged_bam = lambda wildcards: makeCtTxDict(wildcards.sample),
     output:
         "results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw",
     params:
@@ -464,9 +484,9 @@ rule make_fragment_sizes_plots:
         mkdir -p results/fragment_sizes/
         touch {output.fl}
         bamPEFragmentSize --maxFragmentLength {params.max_size_to_plot} --outRawFragmentLengths {output.fl} --table {output.fs} --numberOfProcessors {params.processors} --blackListFileName {params.bl} -b {input.treatment} {input.control} --histogram {output.fp}
-        """    
-        
-        
+        """
+
+
 rule make_fingerprint_plots:
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
@@ -483,8 +503,8 @@ rule make_fingerprint_plots:
     shell:
         """
         plotFingerprint --outQualityMetrics {output.qm} --JSDsample {input.control} --numberOfProcessors max --smartLabels --blackListFileName {params.bl} -b {input.treatment} {input.control} -plot {output.fp}
-        """    
-        
+        """
+
 
 rule calculate_alignment_and_filtering_counts:
     input:
@@ -506,7 +526,7 @@ rule calculate_alignment_and_filtering_counts:
         mv {output}_tmp {output}
         """
 
-               
+
 rule make_html_report:
     input:
         rs=expand("results/read_stats/{sample}.csv",sample=all_samples),
@@ -524,10 +544,10 @@ rule make_html_report:
         config["Bioconductor"]
     log: "results/logs/snakelogs/make_html_report.log"
     script:
-        "scripts/Make_final_report.R"	
+        "scripts/Make_final_report.R"
 
 
-	
+
 rule dummy:
     output:
         ".placeholder"
