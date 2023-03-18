@@ -149,7 +149,7 @@ rule fastqc_after_trimming:
 ##                         trim reads                           ##
 ##################################################################
 
-# Rule 'trim_reads_with_trimmomatic' trims the raw reads using Trimmomatic
+# Rule 'trim_reads_with_trimmomatic' generates fastqc reports and then trims the raw reads using Trimmomatic.
 rule trim_reads_with_trimmomatic:
     input:
         # Input raw fastq files from the samples table
@@ -181,10 +181,18 @@ rule trim_reads_with_trimmomatic:
     shell:
         # Trimmomatic command to run on the input fastq files with the specified parameters
         """
+        # Create the 'results/fastqc_results' directory if it doesn't exist
+        mkdir -p results/fastqc_results
+
+        # Run FastQC on input files (input.fq1 and input.fq2) with 2 threads and save the output in 'results/fastqc_results/' directory
+        fastqc -t 2 -o results/fastqc_results/ {input.fq1} {input.fq2}
+
+        # Run Trimmomatic on paired-end input files (input.fq1 and input.fq2) with specified parameters for adapter clipping, quality trimming, and minimum read length
+        # Save the output trimmed and orphaned reads in the respective output files
         trimmomatic PE -threads {params.trimmomatic_threads} {input.fq1} {input.fq2} {output.trimmed1} {output.orphaned1} {output.trimmed2} {output.orphaned2} ILLUMINACLIP:{params.trimmomatic_adapterfile}:2:15:4:4:true LEADING:20 TRAILING:20 SLIDINGWINDOW:4:15 MINLEN:25
         """
 
-# Rule 'trim_reads_with_cutadapt' trims the reads using Cutadapt after Trimmomatic
+# Rule 'trim_reads_with_cutadapt' trims the reads using Cutadapt after Trimmomatic and then generates a final fastqc report
 rule trim_reads_with_cutadapt:
     input:
         # Input Trimmomatic trimmed fastq files
@@ -209,7 +217,15 @@ rule trim_reads_with_cutadapt:
     shell:
         # Cutadapt command to run on the input fastq files with the specified parameters
         """
+        # Run Cutadapt on paired-end input files (input.R1 and input.R2) with specified parameters for adapter removal, quality trimming, and minimum read length
+        # Save the output trimmed reads in the respective output files and log the results in a JSON format
         cutadapt --json {log} --cores=0 -a file:{params.cutadapt_adapterfile} -A file:{params.cutadapt_adapterfile} -a G{{100}} -A G{{100}} --minimum-length 25 --quality-cutoff 20,20 -e 0.2 --output {output.trimmed1} --paired-output {output.trimmed2} {input.R1} {input.R2}
+
+        # Create the 'results/fastqc_results_after_trimming' directory if it doesn't exist
+        mkdir -p results/fastqc_results_after_trimming
+
+        # Run FastQC on the output trimmed files (output.trimmed1 and output.trimmed2) with 2 threads and save the output in 'results/fastqc_results_after_trimming/' directory
+        fastqc -t 2 -o results/fastqc_results_after_trimming/ {output.trimmed1} {output.trimmed2}
         """
 
 ##################################################################
