@@ -385,114 +385,165 @@ rule call_narrow_peaks_with_macs2:
         macs2 callpeak -t {input.treatment} -c {input.control} -f BAMPE -g {params.effective_genome_size} -n {params.sample_name}_{params.minimum_FDR_cutoff} -q {params.minimum_FDR_cutoff} --outdir results/macs2_normalPeaks/
         """
 
+# This rule calls broad peaks using MACS2 in a Snakemake workflow
 rule call_broad_peaks_with_macs2:
+    # Input is the treatment and control BAM files for species of interest
     input:
         treatment="results/aligned_speciesOfInterest/{sample}.bam",
         control=lambda wildcards: makeCtTxDict(wildcards.sample)
+    # Output is the broad peak file
     output:
         f"results/macs2_broadPeaks/{{sample}}_{str(config['macs2_broad_minimum_FDR_cutoff'])}_peaks.broadPeak",
+    # Parameters for the macs2 callpeak command
     params:
         effective_genome_size=config["effective_genome_size"],
         minimum_FDR_cutoff=config["macs2_broad_minimum_FDR_cutoff"],
         sample_name="{sample}",
+    # Conda environment for MACS2
     conda:
         "envs/callPeaks.yml"
+    # Environment modules for MACS2
     envmodules:
         config["macs2"]
+    # Log file for the macs2 callpeak command
     log:
         "results/logs/snakelogs/call_broad_peaks_with_macs2.{sample}_q"
         + str(config["macs2_broad_minimum_FDR_cutoff"])
         + ".log",
+    # Shell command to call broad peaks using macs2 callpeak
     shell:
         """
+        # Output MACS2 version to log file
         macs2 --version > {log}
+        # Call broad peaks using MACS2 with the specified parameters
         macs2 callpeak -t {input.treatment} -c {input.control} -f BAMPE -g {params.effective_genome_size} -n {params.sample_name}_{params.minimum_FDR_cutoff} -q {params.minimum_FDR_cutoff} --broad --outdir results/macs2_broadPeaks/
         """
 
 ##################################################################
 ##                        Make Bigwigs                          ##
 ##################################################################
+# This rule creates BigWig files without spike-ins using the deepTools bamCoverage tool in a Snakemake workflow
+
 rule make_bigwigs_no_spikein:
+    # Input file is the aligned species of interest BAM file
     input:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
+    # Output file is the resulting BigWig file without spike-ins
     output:
         bw="results/bigwigs_no_spikein/{sample}.bw",
+    # Parameters for the deepTools bamCoverage tool
     params:
         gs=config["effective_genome_size"],
         bs=config["bamCoverage_binSize"],
         sl=config["bamCoverage_smoothLength"],
         bl=config["blacklist_file"],
+    # Conda environment for deepTools
     conda:
         "envs/deeptools.yml"
+    # Environment modules for deepTools
     envmodules:
         config["deeptools"]
+    # Log file for the deepTools bamCoverage tool
     log:
         "results/logs/snakelogs/make_bigwigs_no_spikein_{sample}.log",
+    # Shell command to create BigWig files without spike-ins using the deepTools bamCoverage tool with the specified parameters
     shell:
         """
         bamCoverage --version > {log}
         bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --smoothLength {params.sl} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads
         """
 
-
+# This rule calculates spike-in scale factors for the input BAM files in a Snakemake workflow. 
+# The rule uses samtools to count the total reads and spike-in reads in the input BAM file. It then calculates the spike-in percentage and scale factor, 
+# which are written to a text file in the "results/scale_factors/" directory.
+        
 rule calculate_spikein_scale_factors:
+    # Input is the merged BAM file
     input:
         bam="results/merged/{sample}.bam",
+    # Output is a text file containing the spike-in scale factor
     output:
         report("results/scale_factors/{sample}_scaleFactor.txt"),
+    # Parameter for the spike-in chromosome prefix
     params:
         px=config["spike_in_chrom_prefix"],
+    # Conda environment for samtools
     conda:
         "envs/samtools.yml"
+    # Environment modules for samtools
     envmodules:
         config["samtools"]
+    # Shell command to calculate the spike-in scale factors and write them to the output text file
     shell:
         """
+        # Count total reads in the input BAM file
         total_counts=$(samtools idxstats {input.bam} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
+        # Count spike-in reads in the input BAM file
         spike_in_counts=$(samtools idxstats {input.bam} | grep {params.px} | awk -F'\t' '{{sum+=$3;}} END{{print sum;}}')
+        # Calculate the spike-in percentage
         spike_in_percentage=$(echo "scale=3; $spike_in_counts/$total_counts*100" | bc )
+        # Calculate the scale factor
         scale_factor=$(echo "scale=8; 1000000/$spike_in_counts" | bc )
+        
+        # Write the calculated values to a temporary output file
         echo "bam file:  {input.bam}" > {output}_tmp
         echo "total counts = ${{total_counts}}" >> {output}_tmp
         echo "spike in read counts = ${{spike_in_counts}}" >> {output}_tmp
         echo "spike in percentage = ${{spike_in_percentage}}" >> {output}_tmp
         printf "scale factor = ""%-20.8f\\n" "${{scale_factor}}" >> {output}_tmp
+        
+        # Move the temporary output file to the final output file
         mv {output}_tmp {output}
         """
 
+# This rule creates BigWig files with spike-in normalization in a Snakemake workflow
 
 rule make_bigwigs_with_spikein:
+    # Input is the spike-in scale factor text file and the BAM file with species of interest reads
     input:
         scale="results/scale_factors/{sample}_scaleFactor.txt",
         bam="results/aligned_speciesOfInterest/{sample}.bam",
+    # Output is the BigWig file with spike-in normalization
     output:
         bw=f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw"
+    # Parameters for the bamCoverage command
     params:
         gs=config["effective_genome_size"],
         bs=config["bamCoverage_binSize"],
         sl=config["bamCoverage_smoothLength"],
         bl=config["blacklist_file"],
         px=config["spike_in_chrom_prefix"],
+    # Conda environment for deeptools
     conda:
         "envs/deeptools.yml"
+    # Environment modules for deeptools
     envmodules:
         config["deeptools"]
+    # Log file for the rule
     log:
         "results/logs/snakelogs/make_bigwigs_with_spikein_{sample}.log",
+    # Shell command to create the BigWig file with spike-in normalization
     shell:
         """
+        # Write the bamCoverage version to the log file
         bamCoverage --version > {log}
+        # Extract the scale factor from the input scale factor text file
         scale_factor=$(grep scale {input.scale} | sed 's/scale factor = //g')
+        # Run bamCoverage with the scale factor to create the BigWig file
         bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --smoothLength {params.sl} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads --scaleFactor ${{scale_factor}}
         """
 
-# make normalized bigwigs using bamcompare (KB)
+# This rule creates normalized BigWig files using bamcompare in a Snakemake workflow
+
 rule make_normalized_bigwigs_with_bamcompare:
+    # Input is the treatment and control merged BAM files with species of interest reads
     input:
         tx_merged_bam = "results/aligned_speciesOfInterest/{sample}.bam",
         in_merged_bam = lambda wildcards: makeCtTxDict(wildcards.sample),
+    # Output is the normalized BigWig file
     output:
         "results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw",
+    # Parameters for the bamCompare command
     params:
         sfm=config["scaleFactorsMethod"],
         nmu=config["normalizeUsing"],
@@ -506,13 +557,15 @@ rule make_normalized_bigwigs_with_bamcompare:
         sml=config["smoothLength"],
         ign=config["ignoreForNormalization"],
         bln=config["blacklist_file"]
+    # Environment modules for deeptools
     envmodules:
         config["deeptools"],
+    # Shell command to create the normalized BigWig file using bamCompare
     shell:
         """
+        # Run bamCompare with the specified parameters to create the normalized BigWig file
         bamCompare --smoothLength {params.sml} --minFragmentLength {params.mfl} --ignoreForNormalization {params.ign} --maxFragmentLength {params.mxl} --minMappingQuality {params.mmq} --numberOfProcessors {params.nop} --effectiveGenomeSize {params.egs} --scaleFactorsMethod {params.sfm} --normalizeUsing {params.nmu} --operation {params.bco} --binSize {params.bns} --blackListFileName {params.bln} --centerReads --numberOfProcessors {params.nop} -b1 {input.tx_merged_bam} -b2 {input.in_merged_bam} -o {output}
         """
-
 
 ##################################################################
 ##                              QC                              ##
