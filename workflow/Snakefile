@@ -238,17 +238,15 @@ rule merge_replicates:
         config["samtools"],
     shell:
         """
-        # Check if the output BAM file name is the same as the input BAM file name
-        if [ {output.bam} = {params.bams} ]; then
-            # If the names are the same, copy the input BAM file to the output BAM file
+        # Check if the input BAM file parameter does not contain any spaces
+        if [[ "{params.bams}" != *" "* ]]; then
+            # If there are no spaces (ie there are not multiple files to merge), copy the input BAM file to the output BAM file
             cp {params.bams} {output.bam}
         else
-            # If the names are different, merge the input BAM files using samtools
+            # If there are spaces, merge the input BAM files using samtools
             samtools merge -@ {params.bowtie2_samtools_threads} {output.bam} {params.bams}
         fi
 
-        # Index the output BAM file using samtools
-        samtools index -@ {params.bowtie2_samtools_threads} {output.bam}
         """
 
 rule get_species_of_interest_reads:
