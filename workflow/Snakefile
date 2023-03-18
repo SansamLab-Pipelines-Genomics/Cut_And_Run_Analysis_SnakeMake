@@ -37,6 +37,10 @@ all_samples = [str(i) for i in all_samples]
 rule all:
     input:
         expand(
+            "fastqc_results/{sample}_1_fastqc.html",
+            sample=all_samples
+            ),
+	expand(
             "results/aligned_speciesOfInterest/{sample}.bam",
             sample=merged_samples
             ),
@@ -67,10 +71,36 @@ rule all:
             ),
 	expand(
 	    f"results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw", 
-	    sample = set(samples_lst)),
+	    sample=merged_samples_noInputs,
 	    "results/mergedBackgroundNormalizedBigwigs/" + str(config["experimentName"]) + "_bkgrndNorm.bw"
 	    )
-        
+
+	
+##################################################################
+##                         run fastqc                           ##
+##################################################################
+
+rule fastqc:
+    input:
+        unpack(
+            lambda wildcards: {
+                "fq1": samples_table.loc[wildcards.sample, "fastq1"],
+                "fq2": samples_table.loc[wildcards.sample, "fastq2"],
+            }
+        )
+    output:
+        html1="fastqc_results/{sample}_1_fastqc.html",
+        html2="fastqc_results/{sample}_2_fastqc.html",
+        zip1="fastqc_results/{sample}_1_fastqc.zip",
+        zip2="fastqc_results/{sample}_2_fastqc.zip"
+    params:
+        threads=config["threads"]
+    log:
+        "logs/fastqc/{sample}.log"
+    shell:
+        "fastqc -t {params.threads} -o fastqc_results/ {input.fq1} {input.fq2} 2> {log}"
+
+
 ##################################################################
 ##                         trim reads                           ##
 ##################################################################
