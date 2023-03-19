@@ -47,30 +47,6 @@ all_samples = list(set(samples_table["sample"]))
 # Convert each item in all_samples to a string
 all_samples = [str(i) for i in all_samples]
 
-import pandas as pd
-
-import pandas as pd
-
-def filter_samples_by_merged_sample(merged_sample_value):
-    """
-    This function takes a 'merged_sample' value as input and returns a dictionary containing
-    the unique samples corresponding to the given 'merged_sample' value from a pandas dataframe.
-    """
-    # Filter the DataFrame to include only rows with the desired 'merged_sample' value
-    filtered_rows = samples_table[samples_table['merged_sample'] == merged_sample_value]
-
-    # Convert the 'sample' column from 'filtered_rows' to a list, remove duplicates by converting it to a set and then back to a list
-    unique_samples = list(set(filtered_rows['sample'].tolist()))
-
-    # Create the dictionary containing the filtered samples
-    result = {merged_sample_value: unique_samples}
-
-    # Return the dictionary containing the filtered samples
-    return result
-
-
-
-
 ##################################################################
 ##        set all ulitimate output files in "rule all"          ##
 ##################################################################
@@ -265,12 +241,12 @@ rule merge_replicates:
     input:
         lambda wildcards: expand(
             "results/aligned_and_filtered/{input}.bam",
-            input=filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample],
+            input=cf.filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample],
         ),
     params:
         bams=lambda wildcards: expand(
                 "results/aligned_and_filtered/{input}.bam",
-                input=filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample]
+                input=cf.filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample]
         ),
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
     output:
