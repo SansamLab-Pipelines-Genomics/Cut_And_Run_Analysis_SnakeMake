@@ -47,6 +47,8 @@ all_samples = list(set(samples_table["sample"]))
 # Convert each item in all_samples to a string
 all_samples = [str(i) for i in all_samples]
 
+samples_table_w_merged_suffix = cf.add_merge_suffix_to_merged_samples(samples_table)
+
 
 ##################################################################
 ##        set all ulitimate output files in "rule all"          ##
