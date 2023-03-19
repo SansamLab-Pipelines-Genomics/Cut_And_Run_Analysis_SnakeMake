@@ -22,17 +22,6 @@ Cut_And_Run_Analysis_SnakeMake processes short whole-genome sequencing reads fro
 
 * [Requirements](https://github.com/SansamLab-Pipelines-Genomics/Cut_And_Run_Analysis_SnakeMake/blob/main/docs/requirements.md)
 * [Description of individual steps in pipeline](https://github.com/SansamLab-Pipelines-Genomics/Cut_And_Run_Analysis_SnakeMake/blob/main/docs/run_pipeline_stepByStep.md)
-  * [Trim reads with trimmomatic](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#1--trim-reads-with-trimmomatic)
-  * [Trim the reads further with cutadapt](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#2--trim-reads-further-with-cutadapt)
-  * [Align reads with bowtie2](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#3--align-reads-with-bowtie2)
-  * [Filter Alignments](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#4--filter-alignments)
-  * [Optional step:  Separate subject reads from spike-in reads](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#optional-step--get-reads-from-specific-species)
-  * [Make coverage files for genome viewer with deeptools](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#5--make-coverage-files-for-genome-viewer-with-deeptools)
-  * [Call peaks with](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#5--call-peaks):
-    * [macs2 narrow](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#macs2-narrow)
-    * [macs2 broad](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#macs2-broad)
-    * [sicer](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#sicer)
-
 * [Step-by-step instructions on running Snakemake pipeline:](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#step-by-step-instructions-on-running-snakemake-pipeline)
   * [1.  Load slurm and miniconda](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#1--load-slurm-and-miniconda)
   * [2.  Clone repository](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#2--clone-repository)
