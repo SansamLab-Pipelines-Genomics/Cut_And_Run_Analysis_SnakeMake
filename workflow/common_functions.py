@@ -5,6 +5,23 @@
 import pandas as pd
 import re
 
+def filter_samples_by_merged_sample(merged_sample_value):
+    """
+    This function takes a 'merged_sample' value as input and returns a dictionary containing
+    the unique samples corresponding to the given 'merged_sample' value from a pandas dataframe.
+    """
+    # Filter the DataFrame to include only rows with the desired 'merged_sample' value
+    filtered_rows = samples_table[samples_table['merged_sample'] == merged_sample_value]
+
+    # Convert the 'sample' column from 'filtered_rows' to a list, remove duplicates by converting it to a set and then back to a list
+    unique_samples = list(set(filtered_rows['sample'].tolist()))
+
+    # Create the dictionary containing the filtered samples
+    result = {merged_sample_value: unique_samples}
+
+    # Return the dictionary containing the filtered samples
+    return result
+
 def bamFilenames_from_mergedSamples(wildcard,samples_table):
   df = samples_table.set_index("merged_sample")
   df2 = df.loc[wildcard, "sample"]
