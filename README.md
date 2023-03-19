@@ -21,7 +21,7 @@ Cut_And_Run_Analysis_SnakeMake processes short whole-genome sequencing reads fro
 ## Table of Contents
 
 * [Requirements](https://github.com/SansamLab-Pipelines-Genomics/Cut_And_Run_Analysis_SnakeMake/blob/main/docs/requirements.md)
-* [Description of individual steps in pipeline](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#run-the-pipeline-step-by-step)
+* [Description of individual steps in pipeline](https://github.com/SansamLab-Pipelines-Genomics/Cut_And_Run_Analysis_SnakeMake/blob/main/docs/run_pipeline_stepByStep.md)
   * [Trim reads with trimmomatic](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#1--trim-reads-with-trimmomatic)
   * [Trim the reads further with cutadapt](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#2--trim-reads-further-with-cutadapt)
   * [Align reads with bowtie2](https://github.com/SansamLab/Cut_And_Run_Analysis_SnakeMake#3--align-reads-with-bowtie2)
