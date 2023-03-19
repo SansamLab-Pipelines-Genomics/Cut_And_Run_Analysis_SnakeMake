@@ -264,7 +264,7 @@ rule merge_replicates:
             # If there are spaces, merge the input BAM files using samtools
             samtools merge -@ {params.bowtie2_samtools_threads} {output.bam} {params.bams}
         fi
-        samtools index {output.bam} > {output.bai}
+        samtools index {output.bam}
         """
 
 
