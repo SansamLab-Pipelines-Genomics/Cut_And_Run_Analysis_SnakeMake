@@ -263,12 +263,15 @@ rule quality_filter_aligned_reads:
 
 rule merge_replicates:
     input:
-        expand(
+        lambda wildcards: expand(
             "results/aligned_and_filtered/{input}.bam",
-            input=filter_samples_by_merged_sample({sample}),
+            input=filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample],
         ),
     params:
-        bams=lambda wildcards: cf.bamFilenames_from_mergedSamples(wildcards.sample,samples_table),
+        bams=lambda wildcards: expand(
+                "results/aligned_and_filtered/{input}.bam",
+                input=filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample]
+        ),
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
     output:
         bam="results/merged/{sample}.bam",
@@ -286,6 +289,7 @@ rule merge_replicates:
             samtools merge -@ {params.bowtie2_samtools_threads} {output.bam} {params.bams}
         fi
         """
+
 
 # This rule defines the extraction of reads corresponding to the species of interest in a Snakemake workflow using samtools
 rule get_species_of_interest_reads:
