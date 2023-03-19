@@ -240,14 +240,8 @@ rule quality_filter_aligned_reads:
 
 rule merge_replicates:
     input:
-        expand(
-            "results/aligned_and_filtered/{sample}.bam",
-            sample=all_samples
-        ),
-        expand(
-            "results/aligned_and_filtered/{sample}.bam.bai",
-            sample=all_samples
-        ),
+        "results/aligned_and_filtered/{sample}.bam",
+        "results/aligned_and_filtered/{sample}.bam.bai",
     params:
         bams=lambda wildcards: cf.bamFilenames_from_mergedSamples(wildcards.sample,samples_table),
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
