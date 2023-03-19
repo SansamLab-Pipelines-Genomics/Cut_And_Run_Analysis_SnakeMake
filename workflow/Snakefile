@@ -241,12 +241,12 @@ rule merge_replicates:
     input:
         lambda wildcards: expand(
             "results/aligned_and_filtered/{input}.bam",
-            input=filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample],
+            input=cf.filter_samples_by_merged_sample(wildcards.sample,samples_table)[wildcards.sample],
         ),
     params:
         bams=lambda wildcards: expand(
                 "results/aligned_and_filtered/{input}.bam",
-                input=filter_samples_by_merged_sample(wildcards.sample)[wildcards.sample]
+                input=cf.filter_samples_by_merged_sample(wildcards.sample,samples_table)[wildcards.sample]
         ),
         bowtie2_samtools_threads=config["bowtie2_samtools_threads"],
     output:
