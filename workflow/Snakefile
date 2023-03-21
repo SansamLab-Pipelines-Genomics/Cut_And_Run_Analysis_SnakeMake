@@ -201,7 +201,7 @@ rule align_reads_with_bowtie2:
     shell:
         """
         # Run bowtie2 for paired-end read alignment and pipe the output to samtools for BAM conversion and sorting
-        bowtie2 --met-file {log} --threads {params.bowtie2_threads} --dovetail --phred33 --maxins 2000 -x {params.bowtie2_genome} -1 {input.R1} -2 {input.R2} | samtools view -b - | samtools sort --threads {params.bowtie2_samtools_threads} - -o {output.bam}
+        bowtie2 --met-file {log} --threads {params.bowtie2_threads} --dovetail --phred33 --maxins 1000 -x {params.bowtie2_genome} -1 {input.R1} -2 {input.R2} | samtools view -b - | samtools sort --threads {params.bowtie2_samtools_threads} - -o {output.bam}
         # Index the output BAM file
         samtools index {output.bam}
         """
