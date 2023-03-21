@@ -48,7 +48,7 @@ all_samples = list(set(samples_table["sample"]))
 all_samples = [str(i) for i in all_samples]
 
 # Filter out rows with "control" in the sampleType column or NA in the Control column
-samples_table_noInputs = df.loc[~((df["sampleType"] == "control") | df["Control"].isna())]
+samples_table_noInputs = samples_table.loc[~((df["sampleType"] == "control") | df["Control"].isna())]
 
 # Set the index to the merged_sample column
 samples_table_noInputs.set_index("merged_sample", inplace=True)
