@@ -41,16 +41,6 @@ merged_samples_noInputs = list(set(samples_table_noInputs["merged_sample"]))
 # Convert each item in merged_samples_noInputs to a string
 merged_samples_noInputs = [str(i) for i in merged_samples_noInputs]
 
-# Filter out rows with "control" in the sampleType column or NA in the Control column
-samples_table_noInputs = df.loc[~((df["sampleType"] == "control") | df["Control"].isna())]
-
-# Set the index to the merged_sample column
-samples_table_noInputs.set_index("merged_sample", inplace=True)
-
-# Get a set of unique values from the merged_sample column
-merged_samples_noInputs = set(samples_table_noInputs.index.unique())
-
-
 # Get a list of unique 'sample' values from the samples_table
 all_samples = list(set(samples_table["sample"]))
 
