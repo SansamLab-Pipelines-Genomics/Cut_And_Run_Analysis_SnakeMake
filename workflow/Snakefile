@@ -76,9 +76,9 @@ rule all:
         # Merged bam files
         expand("results/merged/{sample}.bam", sample=merged_samples),
         # BigWig files with spike-in
-        expand(f"results/bigwigs_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}__{str(config['bamCoverage_smoothLength'])}_{str(config['spike_in_chrom_prefix'])}.bw", sample=merged_samples),
+        expand(f"results/bigwigs_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}_{str(config['spike_in_chrom_prefix'])}.bw", sample=merged_samples),
         # BigWig files without spike-in
-        expand(f"results/bigwigs_no_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}__{str(config['bamCoverage_smoothLength'])}.bw",sample=merged_samples),
+        expand(f"results/bigwigs_no_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}.bw",sample=merged_samples),
         # Background normalized BigWig files
         expand(f"results/backgroundNormalizedBigwigs/{{sample}}_{str(config['binSize'])}_{str(config['smoothLength'])}_bkgrndNorm.bw", sample=merged_samples_noInputs)
 
@@ -431,7 +431,7 @@ rule make_bigwigs_no_spikein:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     # Output file is the resulting BigWig file without spike-ins
     output:
-        bw=f"results/bigwigs_no_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}__{str(config['bamCoverage_smoothLength'])}.bw",
+        bw=f"results/bigwigs_no_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}.bw",
     # Parameters for the deepTools bamCoverage tool
     params:
         gs=config["effective_genome_size"],
@@ -506,7 +506,7 @@ rule make_bigwigs_with_spikein:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     # Output is the BigWig file with spike-in normalization
     output:
-        bw=f"results/bigwigs_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}__{str(config['bamCoverage_smoothLength'])}_{str(config['spike_in_chrom_prefix'])}.bw"
+        bw=f"results/bigwigs_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}_{str(config['spike_in_chrom_prefix'])}.bw"
     # Parameters for the bamCoverage command
     params:
         gs=config["effective_genome_size"],
