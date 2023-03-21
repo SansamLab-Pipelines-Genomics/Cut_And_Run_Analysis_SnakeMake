@@ -75,11 +75,11 @@ rule all:
         # Merged bam files
         expand("results/merged/{sample}.bam", sample=merged_samples),
         # BigWig files with spike-in
-        expand(f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw", sample=merged_samples_noInputs),
+        expand(f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw", sample=merged_samples),
         # BigWig files without spike-in
         expand("results/bigwigs_no_spikein/{sample}.bw", sample=merged_samples_noInputs),
         # Background normalized BigWig files
-        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_bkgrndNorm.bw", sample=merged_samples_noInputs)
+        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_bkgrndNorm.bw", sample=merged_samples)
 
 ##################################################################
 ##                         trim reads                           ##
