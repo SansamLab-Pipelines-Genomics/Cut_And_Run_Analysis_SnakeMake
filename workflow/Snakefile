@@ -89,7 +89,7 @@ rule all:
         # BigWig files without spike-in
         expand("results/bigwigs_no_spikein/{sample}.bw", sample=merged_samples_noInputs),
         # Background normalized BigWig files
-        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_bkgrndNorm.bw", sample=merged_samples)
+        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_bkgrndNorm.bw", sample=merged_samples_noInputs)
 
 ##################################################################
 ##                         trim reads                           ##
