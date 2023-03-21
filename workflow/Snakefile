@@ -26,8 +26,8 @@ tmstmp = str(now.strftime("%y%m%d_%H%M"))
 # Read the CSV file specified in the config and set the index using the values in the 'sample' column
 samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False)
 
-# Drop rows with NaN values in the 'Control' column, then set the index using the values in the 'merged_sample' column
-samples_table_noInputs = samples_table.dropna(subset=["Control"]).set_index("merged_sample", drop=False)
+####### Drop rows with NaN values in the 'Control' column, then set the index using the values in the 'merged_sample' column
+######samples_table_noInputs = samples_table.dropna(subset=["Control"]).set_index("merged_sample", drop=False)
 
 # Get a list of unique 'merged_sample' values from the samples_table
 merged_samples = list(set(samples_table["merged_sample"]))
@@ -35,11 +35,11 @@ merged_samples = list(set(samples_table["merged_sample"]))
 # Convert each item in merged_samples to a string
 merged_samples = [str(i) for i in merged_samples]
 
-# Get a list of unique 'merged_sample' values from the samples_table_noInputs
-merged_samples_noInputs = list(set(samples_table_noInputs["merged_sample"]))
+####### Get a list of unique 'merged_sample' values from the samples_table_noInputs
+######merged_samples_noInputs = list(set(samples_table_noInputs["merged_sample"]))
 
-# Convert each item in merged_samples_noInputs to a string
-merged_samples_noInputs = [str(i) for i in merged_samples_noInputs]
+##### Convert each item in merged_samples_noInputs to a string
+##### merged_samples_noInputs = [str(i) for i in merged_samples_noInputs]
 
 # Get a list of unique 'sample' values from the samples_table
 all_samples = list(set(samples_table["sample"]))
