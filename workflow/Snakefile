@@ -80,7 +80,7 @@ rule all:
         # BigWig files without spike-in
         expand(f"results/bigwigs_no_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}__{str(config['bamCoverage_smoothLength'])}.bw",sample=merged_samples),
         # Background normalized BigWig files
-        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_{str(config['binSize'])}_{str(config['smoothLength'])}_bkgrndNorm.bw",, sample=merged_samples_noInputs)
+        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_{str(config['binSize'])}_{str(config['smoothLength'])}_bkgrndNorm.bw", sample=merged_samples_noInputs)
 
 ##################################################################
 ##                         trim reads                           ##
