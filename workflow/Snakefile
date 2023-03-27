@@ -26,26 +26,27 @@ tmstmp = str(now.strftime("%y%m%d_%H%M"))
 # Read the CSV file specified in the config and set the index using the values in the 'sample' column
 samples_table = pd.read_csv(config["samples_csv"]).set_index("sample", drop=False)
 
-# Drop rows with NaN values in the 'Control' column, then set the index using the values in the 'merged_sample' column
-samples_table_noInputs = samples_table.dropna(subset=["Control"]).set_index("merged_sample", drop=False)
-
 # Get a list of unique 'merged_sample' values from the samples_table
 merged_samples = list(set(samples_table["merged_sample"]))
 
 # Convert each item in merged_samples to a string
 merged_samples = [str(i) for i in merged_samples]
 
-# Get a list of unique 'merged_sample' values from the samples_table_noInputs
-merged_samples_noInputs = list(set(samples_table_noInputs["merged_sample"]))
-
-# Convert each item in merged_samples_noInputs to a string
-merged_samples_noInputs = [str(i) for i in merged_samples_noInputs]
-
 # Get a list of unique 'sample' values from the samples_table
 all_samples = list(set(samples_table["sample"]))
 
 # Convert each item in all_samples to a string
 all_samples = [str(i) for i in all_samples]
+
+# Filter out rows with "control" in the sampleType column or NA in the Control column
+samples_table_noInputs = samples_table.loc[~((samples_table["sampleType"] == "control") | samples_table["Control"].isna())]
+
+# Set the index to the merged_sample column
+samples_table_noInputs.set_index("merged_sample", inplace=True)
+
+# Get a set of unique values from the merged_sample column
+merged_samples_noInputs = set(samples_table_noInputs.index.unique())
+
 
 ##################################################################
 ##        set all ulitimate output files in "rule all"          ##
@@ -75,11 +76,11 @@ rule all:
         # Merged bam files
         expand("results/merged/{sample}.bam", sample=merged_samples),
         # BigWig files with spike-in
-        expand(f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw", sample=merged_samples_noInputs),
+        expand(f"results/bigwigs_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}_{str(config['spike_in_chrom_prefix'])}.bw", sample=merged_samples),
         # BigWig files without spike-in
-        expand("results/bigwigs_no_spikein/{sample}.bw", sample=merged_samples_noInputs),
+        expand(f"results/bigwigs_no_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}.bw",sample=merged_samples),
         # Background normalized BigWig files
-        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_bkgrndNorm.bw", sample=merged_samples_noInputs)
+        expand(f"results/backgroundNormalizedBigwigs/{{sample}}_{str(config['binSize'])}_{str(config['smoothLength'])}_bkgrndNorm.bw", sample=merged_samples_noInputs)
 
 ##################################################################
 ##                         trim reads                           ##
@@ -430,7 +431,7 @@ rule make_bigwigs_no_spikein:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     # Output file is the resulting BigWig file without spike-ins
     output:
-        bw="results/bigwigs_no_spikein/{sample}.bw",
+        bw=f"results/bigwigs_no_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}.bw",
     # Parameters for the deepTools bamCoverage tool
     params:
         gs=config["effective_genome_size"],
@@ -505,7 +506,7 @@ rule make_bigwigs_with_spikein:
         bam="results/aligned_speciesOfInterest/{sample}.bam",
     # Output is the BigWig file with spike-in normalization
     output:
-        bw=f"results/bigwigs_spikein/{{sample}}_{str(config['spike_in_chrom_prefix'])}.bw"
+        bw=f"results/bigwigs_spikein/{{sample}}_{str(config['bamCoverage_binSize'])}_{str(config['bamCoverage_smoothLength'])}_{str(config['spike_in_chrom_prefix'])}.bw"
     # Parameters for the bamCoverage command
     params:
         gs=config["effective_genome_size"],
@@ -542,7 +543,7 @@ rule make_normalized_bigwigs_with_bamcompare:
         in_merged_bam = lambda wildcards: makeCtTxDict(wildcards.sample),
     # Output is the normalized BigWig file
     output:
-        "results/backgroundNormalizedBigwigs/{sample}_bkgrndNorm.bw",
+        f"results/backgroundNormalizedBigwigs/{{sample}}_{str(config['binSize'])}_{str(config['smoothLength'])}_bkgrndNorm.bw"
     # Parameters for the bamCompare command
     params:
         sfm=config["scaleFactorsMethod"],
