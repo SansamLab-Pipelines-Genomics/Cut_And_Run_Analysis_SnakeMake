@@ -54,6 +54,7 @@ macs2_broad_minimum_FDR_cutoff: 0.1   # "Broad" options
 # BamCoverage settings
 bamCoverage_binSize: 100
 bamCoverage_smoothLength: 0
+normalize_using: "None"           # Choose from "RPKM", "CPM", "BPM", or "RPGC"
 
 # Background normalization or subtraction options for bamcompare
 scaleFactorsMethod: "None"        # Choose from "readCount", "SES", or "None"
