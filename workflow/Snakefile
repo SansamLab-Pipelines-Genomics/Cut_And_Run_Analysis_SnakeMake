@@ -438,6 +438,7 @@ rule make_bigwigs_no_spikein:
         bs=config["bamCoverage_binSize"],
         sl=config["bamCoverage_smoothLength"],
         bl=config["blacklist_file"],
+        nu=config["normalize_using"],
     # Conda environment for deepTools
     conda:
         "envs/deeptools.yml"
@@ -451,7 +452,7 @@ rule make_bigwigs_no_spikein:
     shell:
         """
         bamCoverage --version > {log}
-        bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --binSize {params.bs} --smoothLength {params.sl} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads
+        bamCoverage -b {input.bam} -o {output.bw} --effectiveGenomeSize {params.gs} --normalizeUsing {params.nu} --binSize {params.bs} --smoothLength {params.sl} --numberOfProcessors max --verbose --blackListFileName {params.bl} --centerReads
         """
 
 # This rule calculates spike-in scale factors for the input BAM files in a Snakemake workflow. 
