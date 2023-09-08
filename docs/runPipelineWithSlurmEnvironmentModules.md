@@ -75,7 +75,7 @@ snakemake --dag | dot -Tpdf > dag.pdf
 
 ### 7.  Run on cluster with slurm
 ```
-sbatch --constraint=westmere \
+sbatch --constraint=haswell \
 --wrap="\
 snakemake \
 -R \
