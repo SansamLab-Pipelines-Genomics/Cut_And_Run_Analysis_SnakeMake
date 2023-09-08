@@ -294,7 +294,7 @@ rule get_species_of_interest_reads:
     shell:
         """
         # Generate a list of chromosomes from the input BAM file, excluding spike-ins and unwanted chromosome strings
-        LIST_STRING=$(samtools idxstats {input.bam} | cut -f1 | grep -v -P ^{params.spike_prefix} | grep -v -P ^EC | grep -v '{params.ste}' | grep -v \* | xargs)
+        LIST_STRING=$(samtools idxstats {input.bam} | cut -f1 | grep -v -P ^{params.spike_prefix} | grep -v -P ^EC | grep -v -E '{params.ste}' | grep -v \* | xargs)
         
         # Filter the input BAM file to keep only the reads from the species of interest
         samtools view --threads {params.bowtie2_samtools_threads} -b {input.bam} $LIST_STRING > {output.bam}
